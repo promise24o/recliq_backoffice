@@ -1,1024 +1,934 @@
+import {
+  IconHome,
+  IconCurrencyDollar,
+  IconChartLine,
+  IconUsers,
+  IconUserCheck,
+  IconRecycle,
+  IconGift,
+  IconBuilding,
+  IconLeaf,
+  IconShieldCheck,
+  IconSettings,
+  IconUser,
+  IconLogout,
+  IconTrendingUp,
+  IconWallet,
+  IconArrowUp,
+  IconArrowDown,
+  IconFileText,
+  IconClock,
+  IconAlertTriangle,
+  IconCheck,
+  IconX,
+  IconEye,
+  IconBan,
+  IconEdit,
+  IconMapPin,
+  IconCalendar,
+  IconScale,
+  IconTrophy,
+  IconStar,
+  IconCoins,
+  IconHistory,
+  IconFileCertificate,
+  IconReceipt,
+  IconTree,
+  IconCloud,
+  IconDownload,
+  IconFlag,
+  IconClipboard,
+  IconLock,
+  IconKey,
+  IconBell,
+  IconPlug,
+  IconActivity,
+  IconUserCircle,
+  IconPercentage,
+  IconToggleLeft,
+  IconMessage,
+  IconMail,
+  IconPoint,
+} from '@tabler/icons-react';
 import { uniqueId } from "lodash";
 
-import {
-  IconAward,
-  IconBoxMultiple,
-  IconPoint,
-  IconAlertCircle,
-  IconNotes,
-  IconCalendar,
-  IconMail,
-  IconTicket,
-  IconEdit,
-  IconGitMerge,
-  IconCurrencyDollar,
-  IconApps,
-  IconFileDescription,
-  IconFileDots,
-  IconFiles,
-  IconBan,
-  IconStar,
-  IconMoodSmile,
-  IconBorderAll,
-  IconBorderHorizontal,
-  IconBorderInner,
-  IconBorderVertical,
-  IconBorderTop,
-  IconUserCircle,
-  IconPackage,
-  IconMessage2,
-  IconBasket,
-  IconChartLine,
-  IconChartArcs,
-  IconChartCandle,
-  IconChartArea,
-  IconChartDots,
-  IconChartDonut3,
-  IconChartRadar,
-  IconLogin,
-  IconUserPlus,
-  IconRotate,
-  IconBox,
-  IconShoppingCart,
-  IconAperture,
-  IconLayout,
-  IconSettings,
-  IconHelp,
-  IconZoomCode,
-  IconBoxAlignBottom,
-  IconBoxAlignLeft,
-  IconBorderStyle2,
-  IconLockAccess,
-  IconAppWindow,
-  IconNotebook,
-  IconFileCheck,
-  IconChartHistogram,
-  IconListTree,
-  IconChartArcs3,
-  IconChartPpf,
-  IconChartScatter,
-  IconChartPie2,
-  IconPageBreak,
-} from "@tabler/icons-react";
-import { ElementType } from "react-spring";
-import { NavGroup } from "@/app/(DashboardLayout)/types/layout/sidebar";
+export interface NavItem {
+  id?: string;
+  title?: string;
+  href?: string;
+  icon?: any;
+  badge?: string;
+  roles?: string[];
+  subheader?: string;
+  children?: NavItem[];
+  chip?: string;
+  chipColor?: string;
+  description?: string;
+}
 
-const Menuitems: NavGroup[] = [
-  {
-    navlabel: true,
-    subheader: "Home",
-  },
+// Role-based menu visibility configuration
+const ROLE_ACCESS = {
+  'OPS_ADMIN': ['Dashboard', 'Users (Recyclers)', 'Agents', 'Pickups & Recycling'],
+  'FINANCE_ADMIN': ['Finance', 'Wallet Float', 'Outgoing Payments'],
+  'STRATEGY_ADMIN': ['Performance & Insights'],
+  'SUPER_ADMIN': ['all'] // Full access
+};
 
+// Role constants for better maintainability
+const ROLES = {
+  OPS_ADMIN: ['OPS_ADMIN'] as string[],
+  FINANCE_ADMIN: ['FINANCE_ADMIN'] as string[],
+  STRATEGY_ADMIN: ['STRATEGY_ADMIN'] as string[],
+  SUPER_ADMIN: ['SUPER_ADMIN'] as string[],
+  OPS_AND_SUPER: ['OPS_ADMIN', 'SUPER_ADMIN'] as string[],
+  FINANCE_AND_SUPER: ['FINANCE_ADMIN', 'SUPER_ADMIN'] as string[],
+  STRATEGY_AND_SUPER: ['STRATEGY_ADMIN', 'SUPER_ADMIN'] as string[],
+  ALL_ROLES: ['OPS_ADMIN', 'FINANCE_ADMIN', 'STRATEGY_ADMIN', 'SUPER_ADMIN'] as string[]
+};
+
+// Check if user role has access to menu item
+const hasAccess = (itemTitle: string | undefined, userRole?: string): boolean => {
+  if (!userRole || !itemTitle) return false;
+  
+  const roleAccess = ROLE_ACCESS[userRole as keyof typeof ROLE_ACCESS];
+  if (!roleAccess) return false;
+  
+  if (roleAccess.includes('all')) return true;
+  return roleAccess.includes(itemTitle);
+};
+
+// Main navigation structure
+const navigationItems: NavItem[] = [
   {
-    id: uniqueId(),
-    title: "Modern",
-    icon: IconAperture,
-    href: "/",
-    chip: "New",
-    chipColor: "secondary",
+    subheader: 'MAIN',
   },
   {
     id: uniqueId(),
-    title: "eCommerce",
-    icon: IconShoppingCart,
-    href: "/dashboards/ecommerce",
-  },
-  {
-    id: uniqueId(),
-    title: "Frontend pages",
-    icon: IconAppWindow,
-    href: "/frontend-pages/",
+    title: 'Dashboard',
+    href: '/',
+    icon: IconHome,
+    roles: ROLES.OPS_AND_SUPER,
     children: [
       {
         id: uniqueId(),
-        title: "Homepage",
-        icon: IconPoint,
-        href: "/frontend-pages/homepage",
+        title: 'Overview',
+        href: '/',
+        icon: IconActivity,
       },
       {
         id: uniqueId(),
-        title: "About Us",
-        icon: IconPoint,
-        href: "/frontend-pages/about",
+        title: "Today's Activity",
+        href: '/dashboard/today',
+        icon: IconClock,
       },
       {
         id: uniqueId(),
-        title: "Blog",
-        icon: IconPoint,
-        href: "/frontend-pages/blog",
-      },
-      {
-        id: uniqueId(),
-        title: "Blog Details",
-        icon: IconPoint,
-        href: "/frontend-pages/blog/Blog_1",
-      },
-      {
-        id: uniqueId(),
-        title: "Contact",
-        icon: IconPoint,
-        href: "/frontend-pages/contact",
-      },
-      {
-        id: uniqueId(),
-        title: "Portfolio",
-        icon: IconPoint,
-        href: "/frontend-pages/portfolio",
-      },
-      {
-        id: uniqueId(),
-        title: "Pricing",
-        icon: IconPoint,
-        href: "/frontend-pages/pricing",
-      },
-    ],
-  },
-  {
-    navlabel: true,
-    subheader: "Apps",
-  },
-  {
-    id: uniqueId(),
-    title: "Contacts",
-    icon: IconPackage,
-    chip: "2",
-    chipColor: "secondary",
-    href: "/apps/contacts",
-  },
-
-  {
-    id: uniqueId(),
-    title: "Blog",
-    icon: IconChartDonut3,
-    href: "/apps/blog/",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Posts",
-        icon: IconPoint,
-        href: "/apps/blog/post",
-      },
-      {
-        id: uniqueId(),
-        title: "Detail",
-        icon: IconPoint,
-        href: "/apps/blog/detail/streaming-video-way-before-it-was-cool-go-dark-tomorrow",
+        title: 'System Health',
+        href: '/dashboard/health',
+        icon: IconTrendingUp,
       },
     ],
   },
   {
     id: uniqueId(),
-    title: "Ecommerce",
-    icon: IconBasket,
-    href: "/apps/ecommerce/",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Shop",
-        icon: IconPoint,
-        href: "/apps/ecommerce/shop",
-      },
-      {
-        id: uniqueId(),
-        title: "Detail",
-        icon: IconPoint,
-        href: "/apps/ecommerce/detail/1",
-      },
-      {
-        id: uniqueId(),
-        title: "List",
-        icon: IconPoint,
-        href: "/apps/ecommerce/list",
-      },
-      {
-        id: uniqueId(),
-        title: "Checkout",
-        icon: IconPoint,
-        href: "/apps/ecommerce/checkout",
-      },
-      {
-        id: uniqueId(),
-        title: "Add Product",
-        icon: IconPoint,
-        href: "/apps/ecommerce/add-product",
-      },
-      {
-        id: uniqueId(),
-        title: "Edit Product",
-        icon: IconPoint,
-        href: "/apps/ecommerce/edit-product",
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: "Chats",
-    icon: IconMessage2,
-    href: "/apps/chats",
-  },
-  {
-    id: uniqueId(),
-    title: "Users",
-    icon: IconUserCircle,
-    href: "/apps/user-profile/profile",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Profile",
-        icon: IconPoint,
-        href: "/apps/user-profile/profile",
-      },
-      {
-        id: uniqueId(),
-        title: "Followers",
-        icon: IconPoint,
-        href: "/apps/user-profile/followers",
-      },
-      {
-        id: uniqueId(),
-        title: "Friends",
-        icon: IconPoint,
-        href: "/apps/user-profile/friends",
-      },
-      {
-        id: uniqueId(),
-        title: "Gallery",
-        icon: IconPoint,
-        href: "/apps/user-profile/gallery",
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: "Notes",
-    icon: IconNotes,
-    href: "/apps/notes",
-  },
-  {
-    id: uniqueId(),
-    title: "Calendar",
-    icon: IconCalendar,
-    href: "/apps/calendar",
-  },
-  {
-    id: uniqueId(),
-    title: "Email",
-    icon: IconMail,
-    href: "/apps/email",
-  },
-  {
-    id: uniqueId(),
-    title: "Tickets",
-    icon: IconTicket,
-    href: "/apps/tickets",
-  },
-  {
-    id: uniqueId(),
-    title: "Kanban",
-    icon: IconNotebook,
-    href: "/apps/kanban",
-  },
-
-  {
-    id: uniqueId(),
-    title: "Invoice",
-    icon: IconFileCheck,
-    href: "/apps/invoice/list",
-    children: [
-      {
-        id: uniqueId(),
-        title: "List",
-        icon: IconPoint,
-        href: "/apps/invoice/list",
-      },
-      {
-        id: uniqueId(),
-        title: "Details",
-        icon: IconPoint,
-        href: "/apps/invoice/detail/PineappleInc",
-      },
-      {
-        id: uniqueId(),
-        title: "Create",
-        icon: IconPoint,
-        href: "/apps/invoice/create",
-      },
-      {
-        id: uniqueId(),
-        title: "Edit",
-        icon: IconPoint,
-        href: "/apps/invoice/edit/PineappleInc",
-      },
-    ],
-  },
-
-  {
-    navlabel: true,
-    subheader: "Pages",
-  },
-  {
-    id: uniqueId(),
-    title: "Roll Base Access",
-    icon: IconLockAccess,
-    href: "/theme-pages/casl",
-  },
-  {
-    id: uniqueId(),
-    title: "Pricing",
+    title: 'Finance',
+    href: '/finance',
     icon: IconCurrencyDollar,
-    href: "/theme-pages/pricing",
-  },
-  {
-    id: uniqueId(),
-    title: "Account Setting",
-    icon: IconUserCircle,
-    href: "/theme-pages/account-settings",
-  },
-  {
-    id: uniqueId(),
-    title: "FAQ",
-    icon: IconHelp,
-    href: "/theme-pages/faq",
-  },
-  {
-    id: uniqueId(),
-    title: "Tabler Icon",
-    icon: IconMoodSmile,
-    href: "/icons",
-  },
-  {
-    id: uniqueId(),
-    title: "Sample Page",
-    icon: IconPageBreak,
-    href: "/sample-page",
-  },
-  {
-    id: uniqueId(),
-    title: "Landingpage",
-    icon: IconAppWindow,
-    href: "/landingpage",
-  },
-  {
-    id: uniqueId(),
-    title: "Widgets",
-    icon: IconLayout,
-    href: "/widgets/cards",
+    roles: ROLES.FINANCE_AND_SUPER,
     children: [
       {
         id: uniqueId(),
-        title: "Cards",
-        icon: IconPoint,
-        href: "/widgets/cards",
-      },
-      {
-        id: uniqueId(),
-        title: "Banners",
-        icon: IconPoint,
-        href: "/widgets/banners",
-      },
-      {
-        id: uniqueId(),
-        title: "Charts",
-        icon: IconPoint,
-        href: "/widgets/charts",
-      },
-    ],
-  },
-  {
-    navlabel: true,
-    subheader: "Forms",
-  },
-  {
-    id: uniqueId(),
-    title: "Form Elements",
-    icon: IconApps,
-    href: "/forms/form-elements/autocomplete",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Autocomplete",
-        icon: IconPoint,
-        href: "/forms/form-elements/autocomplete",
-      },
-      {
-        id: uniqueId(),
-        title: "Button",
-        icon: IconPoint,
-        href: "/forms/form-elements/button",
-      },
-      {
-        id: uniqueId(),
-        title: "Checkbox",
-        icon: IconPoint,
-        href: "/forms/form-elements/checkbox",
-      },
-      {
-        id: uniqueId(),
-        title: "Radio",
-        icon: IconPoint,
-        href: "/forms/form-elements/radio",
-      },
-      {
-        id: uniqueId(),
-        title: "Date Time",
-        icon: IconPoint,
-        href: "/forms/form-elements/date-time",
-      },
-      {
-        id: uniqueId(),
-        title: "Slider",
-        icon: IconPoint,
-        href: "/forms/form-elements/slider",
-      },
-      {
-        id: uniqueId(),
-        title: "Switch",
-        icon: IconPoint,
-        href: "/forms/form-elements/switch",
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: "Form Layout",
-    icon: IconFileDescription,
-    href: "/forms/form-layout",
-  },
-  {
-    id: uniqueId(),
-    title: "Form Horizontal",
-    icon: IconBoxAlignBottom,
-    href: "/forms/form-horizontal",
-  },
-  {
-    id: uniqueId(),
-    title: "Form Vertical",
-    icon: IconBoxAlignLeft,
-    href: "/forms/form-vertical",
-  },
-  {
-    id: uniqueId(),
-    title: "Form Custom",
-    icon: IconFileDots,
-    href: "/forms/form-custom",
-  },
-  {
-    id: uniqueId(),
-    title: "Form Wizard",
-    icon: IconFiles,
-    href: "/forms/form-wizard",
-  },
-  {
-    id: uniqueId(),
-    title: "Form Validation",
-    icon: IconFiles,
-    href: "/forms/form-validation",
-  },
-  {
-    id: uniqueId(),
-    title: "Tiptap Editor",
-    icon: IconEdit,
-    href: "/forms/form-tiptap",
-  },
-  {
-    navlabel: true,
-    subheader: "Tables",
-  },
-  {
-    id: uniqueId(),
-    title: "Basic",
-    icon: IconBorderAll,
-    href: "/tables/basic",
-  },
-  {
-    id: uniqueId(),
-    title: "Collapsible",
-    icon: IconBorderHorizontal,
-    href: "/tables/collapsible",
-  },
-  {
-    id: uniqueId(),
-    title: "Enhanced",
-    icon: IconBorderInner,
-    href: "/tables/enhanced",
-  },
-  {
-    id: uniqueId(),
-    title: "Fixed Header",
-    icon: IconBorderVertical,
-    href: "/tables/fixed-header",
-  },
-  {
-    id: uniqueId(),
-    title: "Pagination",
-    icon: IconBorderTop,
-    href: "/tables/pagination",
-  },
-  {
-    id: uniqueId(),
-    title: "Search",
-    icon: IconBorderStyle2,
-    href: "/tables/search",
-  },
-  {
-    id: uniqueId(),
-    title: "React Table",
-    icon: IconBorderStyle2,
-    href: "/react-tables/basic",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Basic",
-        icon: IconPoint,
-        href: "/react-tables/basic",
-      },
-      {
-        id: uniqueId(),
-        title: "Dense",
-        icon: IconPoint,
-        href: "/react-tables/dense",
-      },
-      {
-        id: uniqueId(),
-        title: "Filter",
-        icon: IconPoint,
-        href: "/react-tables/filter",
-      },
-      {
-        id: uniqueId(),
-        title: "Row Selection",
-        icon: IconPoint,
-        href: "/react-tables/row-selection",
-      },
-      {
-        id: uniqueId(),
-        title: "Pagination",
-        icon: IconPoint,
-        href: "/react-tables/pagination",
-      },
-      {
-        id: uniqueId(),
-        title: "Sorting",
-        icon: IconPoint,
-        href: "/react-tables/sorting",
-      },
-      {
-        id: uniqueId(),
-        title: "Column Visibility",
-        icon: IconPoint,
-        href: "/react-tables/column-visiblity",
-      },
-      {
-        id: uniqueId(),
-        title: "Drag n Drop",
-        icon: IconPoint,
-        href: "/react-tables/drag-n-drop",
-      },
-      {
-        id: uniqueId(),
-        title: "Editable",
-        icon: IconPoint,
-        href: "/react-tables/editable",
-      },
-      {
-        id: uniqueId(),
-        title: "Empty",
-        icon: IconPoint,
-        href: "/react-tables/empty",
-      },
-      {
-        id: uniqueId(),
-        title: "Expand",
-        icon: IconPoint,
-        href: "/react-tables/expanding",
-      },
-      {
-        id: uniqueId(),
-        title: "Sticky",
-        icon: IconPoint,
-        href: "/react-tables/sticky",
-      },
-    ],
-  },
-  {
-    navlabel: true,
-    subheader: "UI",
-  },
-  {
-    id: uniqueId(),
-    title: "Ui Components",
-    icon: IconBox,
-    href: "/ui-components/alert",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Alert",
-        icon: IconPoint,
-        href: "/ui-components/alert",
-      },
-      {
-        id: uniqueId(),
-        title: "Accordion",
-        icon: IconPoint,
-        href: "/ui-components/accordion",
-      },
-      {
-        id: uniqueId(),
-        title: "Avatar",
-        icon: IconPoint,
-        href: "/ui-components/avatar",
-      },
-      {
-        id: uniqueId(),
-        title: "Chip",
-        icon: IconPoint,
-        href: "/ui-components/chip",
-      },
-      {
-        id: uniqueId(),
-        title: "Dialog",
-        icon: IconPoint,
-        href: "/ui-components/dialog",
-      },
-      {
-        id: uniqueId(),
-        title: "List",
-        icon: IconPoint,
-        href: "/ui-components/list",
-      },
-      {
-        id: uniqueId(),
-        title: "Popover",
-        icon: IconPoint,
-        href: "/ui-components/popover",
-      },
-      {
-        id: uniqueId(),
-        title: "Rating",
-        icon: IconPoint,
-        href: "/ui-components/rating",
-      },
-      {
-        id: uniqueId(),
-        title: "Tabs",
-        icon: IconPoint,
-        href: "/ui-components/tabs",
-      },
-      {
-        id: uniqueId(),
-        title: "Tooltip",
-        icon: IconPoint,
-        href: "/ui-components/tooltip",
-      },
-      {
-        id: uniqueId(),
-        title: "Transfer List",
-        icon: IconPoint,
-        href: "/ui-components/transfer-list",
-      },
-      {
-        id: uniqueId(),
-        title: "Typography",
-        icon: IconPoint,
-        href: "/ui-components/typography",
-      },
-    ],
-  },
-
-  {
-    navlabel: true,
-    subheader: "Charts",
-  },
-  {
-    id: uniqueId(),
-    title: "Line",
-    icon: IconChartLine,
-    href: "/charts/line",
-  },
-  {
-    id: uniqueId(),
-    title: "Gradient",
-    icon: IconChartArcs,
-    href: "/charts/gradient",
-  },
-  {
-    id: uniqueId(),
-    title: "Area",
-    icon: IconChartArea,
-    href: "/charts/area",
-  },
-  {
-    id: uniqueId(),
-    title: "Candlestick",
-    icon: IconChartCandle,
-    href: "/charts/candlestick",
-  },
-  {
-    id: uniqueId(),
-    title: "Column",
-    icon: IconChartDots,
-    href: "/charts/column",
-  },
-  {
-    id: uniqueId(),
-    title: "Doughtnut & Pie",
-    icon: IconChartDonut3,
-    href: "/charts/doughnut",
-  },
-  {
-    id: uniqueId(),
-    title: "RadialBar & Radar",
-    icon: IconChartRadar,
-    href: "/charts/radialbar",
-  },
-
-  {
-    navlabel: true,
-    subheader: "Mui Charts",
-  },
-  {
-    id: uniqueId(),
-    title: "BarCharts",
-    icon: IconChartHistogram,
-    href: "/muicharts/barcharts",
-  },
-  {
-    id: uniqueId(),
-    title: "LineCharts",
-    icon: IconChartLine,
-    href: "/muicharts/linecharts/line",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Lines",
-        icon: IconPoint,
-        href: "/muicharts/linecharts/line",
-      },
-      {
-        id: uniqueId(),
-        title: "Area",
-        icon: IconPoint,
-        href: "/muicharts/linecharts/area",
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: "PieCharts",
-    icon: IconChartPie2,
-    href: "/muicharts/piecharts",
-  },
-  {
-    id: uniqueId(),
-    title: "ScatterCharts",
-    icon: IconChartScatter,
-    href: "/muicharts/scattercharts",
-  },
-  {
-    id: uniqueId(),
-    title: "SparklineCharts",
-    icon: IconChartPpf,
-    href: "/muicharts/sparklinecharts",
-  },
-  {
-    id: uniqueId(),
-    title: "GaugeCharts",
-    icon: IconChartArcs3,
-    href: "/muicharts/gaugecharts",
-  },
-
-  {
-    navlabel: true,
-    subheader: "Mui Trees",
-  },
-  {
-    id: uniqueId(),
-    title: "SimpleTreeView",
-    icon: IconListTree,
-    href: "/mui-trees/simpletree/simpletree-items",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Items",
-        icon: IconPoint,
-        href: "/mui-trees/simpletree/simpletree-items",
-      },
-      {
-        id: uniqueId(),
-        title: "Selection",
-        icon: IconPoint,
-        href: "/mui-trees/simpletree/simpletree-selection",
-      },
-      {
-        id: uniqueId(),
-        title: "Expansion",
-        icon: IconPoint,
-        href: "/mui-trees/simpletree/simpletree-expansion",
-      },
-      {
-        id: uniqueId(),
-        title: "Customization",
-        icon: IconPoint,
-        href: "/mui-trees/simpletree/simpletree-customization",
-      },
-      {
-        id: uniqueId(),
-        title: "Focus",
-        icon: IconPoint,
-        href: "/mui-trees/simpletree/simpletree-focus",
-      },
-    ],
-  },
-  {
-    navlabel: true,
-    subheader: "Auth",
-  },
-
-  {
-    id: uniqueId(),
-    title: "Login",
-    icon: IconLogin,
-    href: "/auth/auth1/login",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Side Login",
-        icon: IconPoint,
-        href: "/auth/auth1/login",
-      },
-      {
-        id: uniqueId(),
-        title: "Boxed Login",
-        icon: IconPoint,
-        href: "/auth/auth2/login",
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: "Register",
-    icon: IconUserPlus,
-    href: "/auth/auth1/register",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Side Register",
-        icon: IconPoint,
-        href: "/auth/auth1/register",
-      },
-      {
-        id: uniqueId(),
-        title: "Boxed Register",
-        icon: IconPoint,
-        href: "/auth/auth2/register",
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: "Forgot Password",
-    icon: IconRotate,
-    href: "/auth/auth1/forgot-password",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Side Forgot Password",
-        icon: IconPoint,
-        href: "/auth/auth1/forgot-password",
-      },
-      {
-        id: uniqueId(),
-        title: "Boxed Forgot Password",
-        icon: IconPoint,
-        href: "/auth/auth2/forgot-password",
-      },
-    ],
-  },
-
-  {
-    id: uniqueId(),
-    title: "Two Steps",
-    icon: IconZoomCode,
-    href: "/auth/auth1/two-steps",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Side Two Steps",
-        icon: IconPoint,
-        href: "/auth/auth1/two-steps",
-      },
-      {
-        id: uniqueId(),
-        title: "Boxed Two Steps",
-        icon: IconPoint,
-        href: "/auth/auth2/two-steps",
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: "Error",
-    icon: IconAlertCircle,
-    href: "/auth/error",
-  },
-  {
-    id: uniqueId(),
-    title: "Maintenance",
-    icon: IconSettings,
-    href: "/auth/maintenance",
-  },
-
-  {
-    navlabel: true,
-    subheader: "Other",
-  },
-  {
-    id: uniqueId(),
-    title: "Menu Level",
-    icon: IconBoxMultiple,
-    href: "/menulevel/",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Level 1",
-        icon: IconPoint,
-        href: "/l1",
-      },
-      {
-        id: uniqueId(),
-        title: "Level 1.1",
-        icon: IconPoint,
-        href: "/l1.1",
+        title: 'Revenue Overview',
+        href: '/finance/revenue',
+        icon: IconArrowUp,
         children: [
           {
             id: uniqueId(),
-            title: "Level 2",
-            icon: IconPoint,
-            href: "/l2",
+            title: 'Service Fees',
+            href: '/finance/revenue/service-fees',
+            icon: IconWallet,
           },
           {
             id: uniqueId(),
-            title: "Level 2.1",
-            icon: IconPoint,
-            href: "/l2.1",
-            children: [
-              {
-                id: uniqueId(),
-                title: "Level 3",
-                icon: IconPoint,
-                href: "/l3",
-              },
-              {
-                id: uniqueId(),
-                title: "Level 3.1",
-                icon: IconPoint,
-                href: "/l3.1",
-              },
-            ],
+            title: 'B2B Payments',
+            href: '/finance/revenue/b2b',
+            icon: IconBuilding,
+          },
+          {
+            id: uniqueId(),
+            title: 'Agent Commissions',
+            href: '/finance/revenue/commissions',
+            icon: IconUserCheck,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'Incoming Payments',
+        href: '/finance/incoming',
+        icon: IconArrowDown,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'User Payments',
+            href: '/finance/incoming/users',
+            icon: IconUsers,
+          },
+          {
+            id: uniqueId(),
+            title: 'Enterprise Payments',
+            href: '/finance/incoming/enterprise',
+            icon: IconBuilding,
+          },
+          {
+            id: uniqueId(),
+            title: 'Payment Status',
+            href: '/finance/incoming/status',
+            icon: IconCheck,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'Outgoing Payments',
+        href: '/finance/outgoing',
+        icon: IconArrowUp,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Agent Payouts',
+            href: '/finance/outgoing/agents',
+            icon: IconUserCheck,
+          },
+          {
+            id: uniqueId(),
+            title: 'User Withdrawals',
+            href: '/finance/outgoing/withdrawals',
+            icon: IconWallet,
+          },
+          {
+            id: uniqueId(),
+            title: 'Refunds & Reversals',
+            href: '/finance/outgoing/refunds',
+            icon: IconX,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'Wallet Float',
+        href: '/finance/wallet',
+        icon: IconWallet,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Platform Balance',
+            href: '/finance/wallet/balance',
+            icon: IconScale,
+          },
+          {
+            id: uniqueId(),
+            title: 'Escrow Amounts',
+            href: '/finance/wallet/escrow',
+            icon: IconLock,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'Settlement & Reconciliation',
+        href: '/finance/settlement',
+        icon: IconFileText,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Daily Reconciliation',
+            href: '/finance/settlement/daily',
+            icon: IconCalendar,
+          },
+          {
+            id: uniqueId(),
+            title: 'Provider Reports',
+            href: '/finance/settlement/providers',
+            icon: IconReceipt,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'Finance Logs',
+        href: '/finance/logs',
+        icon: IconHistory,
+        description: 'Immutable transaction ledger',
+      },
+    ],
+  },
+  {
+    id: uniqueId(),
+    title: 'Performance & Insights',
+    href: '/performance',
+    icon: IconChartLine,
+    roles: ROLES.STRATEGY_AND_SUPER,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Agent Performance',
+        href: '/performance/agents',
+        icon: IconUserCheck,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Pickups Completed',
+            href: '/performance/agents/pickups',
+            icon: IconCheck,
+          },
+          {
+            id: uniqueId(),
+            title: 'Response Time',
+            href: '/performance/agents/response',
+            icon: IconClock,
+          },
+          {
+            id: uniqueId(),
+            title: 'Dispute Rate',
+            href: '/performance/agents/disputes',
+            icon: IconAlertTriangle,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'User Activity',
+        href: '/performance/users',
+        icon: IconUsers,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Active Users',
+            href: '/performance/users/active',
+            icon: IconActivity,
+          },
+          {
+            id: uniqueId(),
+            title: 'Recycling Frequency',
+            href: '/performance/users/frequency',
+            icon: IconRecycle,
+          },
+          {
+            id: uniqueId(),
+            title: 'Retention & Churn',
+            href: '/performance/users/retention',
+            icon: IconTrendingUp,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'Pickup Efficiency',
+        href: '/performance/pickups',
+        icon: IconRecycle,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Duration Analytics',
+            href: '/performance/pickups/duration',
+            icon: IconClock,
+          },
+          {
+            id: uniqueId(),
+            title: 'Completion Rate',
+            href: '/performance/pickups/completion',
+            icon: IconCheck,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'Location Performance',
+        href: '/performance/locations',
+        icon: IconMapPin,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Area-wise Volume',
+            href: '/performance/locations/volume',
+            icon: IconTrendingUp,
+          },
+          {
+            id: uniqueId(),
+            title: 'Agent Density',
+            href: '/performance/locations/density',
+            icon: IconUsers,
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: 'Revenue Performance',
+        href: '/performance/revenue',
+        icon: IconCurrencyDollar,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Revenue per kg',
+            href: '/performance/revenue-per-kg',
+            icon: IconScale,
+          },
+          {
+            id: uniqueId(),
+            title: 'Cost per Pickup',
+            href: '/performance/cost-per-pickup',
+            icon: IconCurrencyDollar,
+          },
+          {
+            id: uniqueId(),
+            title: 'Profit Margins',
+            href: '/performance/profit-margins',
+            icon: IconTrendingUp,
           },
         ],
       },
     ],
   },
   {
-    id: uniqueId(),
-    title: "Disabled",
-    icon: IconBan,
-    href: "",
-    disabled: true,
+    subheader: 'USER MANAGEMENT',
   },
   {
     id: uniqueId(),
-    title: "SubCaption",
-    subtitle: "This is the sutitle",
-    icon: IconStar,
-    href: "",
+    title: 'Users (Recyclers)',
+    href: '/users',
+    icon: IconUsers,
+    roles: ROLES.OPS_AND_SUPER,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'All Users',
+        href: '/users/all',
+        icon: IconUsers,
+      },
+      {
+        id: uniqueId(),
+        title: 'User Profiles',
+        href: '/users/profiles',
+        icon: IconUserCircle,
+      },
+      {
+        id: uniqueId(),
+        title: 'KYC Status',
+        href: '/users/kyc',
+        icon: IconFileCertificate,
+      },
+      {
+        id: uniqueId(),
+        title: 'Wallet (Read-only)',
+        href: '/users/wallets',
+        icon: IconWallet,
+      },
+      {
+        id: uniqueId(),
+        title: 'Activity History',
+        href: '/users/activity',
+        icon: IconHistory,
+      },
+      {
+        id: uniqueId(),
+        title: 'Suspended/Flagged Users',
+        href: '/users/suspended',
+        icon: IconBan,
+      },
+    ],
   },
-
   {
     id: uniqueId(),
-    title: "Chip",
-    icon: IconAward,
-    href: "",
-    chip: "9",
-    chipColor: "primary",
+    title: 'Agents',
+    href: '/agents',
+    icon: IconUserCheck,
+    roles: ROLES.OPS_AND_SUPER,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'All Agents',
+        href: '/agents/all',
+        icon: IconUserCheck,
+      },
+      {
+        id: uniqueId(),
+        title: 'Agent Verification (KYC)',
+        href: '/agents/verification',
+        icon: IconFileCertificate,
+      },
+      {
+        id: uniqueId(),
+        title: 'Agent Wallets',
+        href: '/agents/wallets',
+        icon: IconWallet,
+      },
+      {
+        id: uniqueId(),
+        title: 'Commission Rates',
+        href: '/agents/commissions',
+        icon: IconPercentage,
+      },
+      {
+        id: uniqueId(),
+        title: 'Performance Summary',
+        href: '/agents/performance',
+        icon: IconChartLine,
+      },
+      {
+        id: uniqueId(),
+        title: 'Availability Status',
+        href: '/agents/availability',
+        icon: IconClock,
+      },
+      {
+        id: uniqueId(),
+        title: 'Suspended Agents',
+        href: '/agents/suspended',
+        icon: IconBan,
+      },
+    ],
+  },
+  {
+    subheader: 'OPERATIONS',
   },
   {
     id: uniqueId(),
-    title: "Outlined",
-    icon: IconMoodSmile,
-    href: "",
-    chip: "outline",
-    variant: "outlined",
-    chipColor: "primary",
+    title: 'Pickups & Recycling',
+    href: '/pickups',
+    icon: IconRecycle,
+    roles: ROLES.OPS_AND_SUPER,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Pickup Requests',
+        href: '/pickups/requests',
+        icon: IconRecycle,
+      },
+      {
+        id: uniqueId(),
+        title: 'Scheduled Pickups',
+        href: '/pickups/scheduled',
+        icon: IconCalendar,
+      },
+      {
+        id: uniqueId(),
+        title: 'Completed Pickups',
+        href: '/pickups/completed',
+        icon: IconCheck,
+      },
+      {
+        id: uniqueId(),
+        title: 'Failed/Cancelled Pickups',
+        href: '/pickups/failed',
+        icon: IconX,
+      },
+      {
+        id: uniqueId(),
+        title: 'Drop-off Records',
+        href: '/pickups/dropoffs',
+        icon: IconMapPin,
+      },
+      {
+        id: uniqueId(),
+        title: 'Weight Logs',
+        href: '/pickups/weights',
+        icon: IconScale,
+      },
+      {
+        id: uniqueId(),
+        title: 'Disputes',
+        href: '/pickups/disputes',
+        icon: IconAlertTriangle,
+      },
+    ],
   },
   {
     id: uniqueId(),
-    title: "External Link",
-    external: true,
-    icon: IconStar,
-    href: "https://google.com",
+    title: 'Rewards & Gamification',
+    href: '/rewards',
+    icon: IconGift,
+    roles: ROLES.OPS_AND_SUPER,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Points Rules',
+        href: '/rewards/points',
+        icon: IconCoins,
+      },
+      {
+        id: uniqueId(),
+        title: 'Badges',
+        href: '/rewards/badges',
+        icon: IconTrophy,
+      },
+      {
+        id: uniqueId(),
+        title: 'Challenges',
+        href: '/rewards/challenges',
+        icon: IconStar,
+      },
+      {
+        id: uniqueId(),
+        title: 'Rewards & Benefits',
+        href: '/rewards/benefits',
+        icon: IconGift,
+      },
+      {
+        id: uniqueId(),
+        title: 'Redemptions Log',
+        href: '/rewards/redemptions',
+        icon: IconHistory,
+      },
+      {
+        id: uniqueId(),
+        title: 'Activity Feed',
+        href: '/rewards/activity',
+        icon: IconActivity,
+      },
+    ],
+  },
+  {
+    id: uniqueId(),
+    title: 'Referrals',
+    href: '/referrals',
+    icon: IconUsers,
+    roles: ROLES.OPS_AND_SUPER,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Referral Overview',
+        href: '/referrals/overview',
+        icon: IconEye,
+      },
+      {
+        id: uniqueId(),
+        title: 'Pending Referrals',
+        href: '/referrals/pending',
+        icon: IconClock,
+      },
+      {
+        id: uniqueId(),
+        title: 'Completed Referrals',
+        href: '/referrals/completed',
+        icon: IconCheck,
+      },
+      {
+        id: uniqueId(),
+        title: 'Fraud Checks',
+        href: '/referrals/fraud',
+        icon: IconFlag,
+      },
+    ],
+  },
+  {
+    id: uniqueId(),
+    title: 'B2B / Enterprise',
+    href: '/enterprise',
+    icon: IconBuilding,
+    roles: ROLES.OPS_AND_SUPER,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Enterprise Clients',
+        href: '/enterprise/clients',
+        icon: IconBuilding,
+      },
+      {
+        id: uniqueId(),
+        title: 'Contracts & Pricing',
+        href: '/enterprise/contracts',
+        icon: IconFileText,
+      },
+      {
+        id: uniqueId(),
+        title: 'Scheduled Collections',
+        href: '/enterprise/collections',
+        icon: IconCalendar,
+      },
+      {
+        id: uniqueId(),
+        title: 'Invoices',
+        href: '/enterprise/invoices',
+        icon: IconReceipt,
+      },
+      {
+        id: uniqueId(),
+        title: 'Agent Assignments',
+        href: '/enterprise/assignments',
+        icon: IconUserCheck,
+      },
+    ],
+  },
+  {
+    id: uniqueId(),
+    title: 'Environmental Impact',
+    href: '/environment',
+    icon: IconLeaf,
+    roles: ROLES.SUPER_ADMIN,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Impact Dashboard',
+        href: '/environment/dashboard',
+        icon: IconChartLine,
+      },
+      {
+        id: uniqueId(),
+        title: 'CO₂ Saved',
+        href: '/environment/co2',
+        icon: IconCloud,
+      },
+      {
+        id: uniqueId(),
+        title: 'Material Breakdown',
+        href: '/environment/materials',
+        icon: IconRecycle,
+      },
+      {
+        id: uniqueId(),
+        title: 'SDG Metrics',
+        href: '/environment/sdg',
+        icon: IconTree,
+      },
+      {
+        id: uniqueId(),
+        title: 'Export Reports',
+        href: '/environment/reports',
+        icon: IconDownload,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'PDF Reports',
+            href: '/environment/reports/pdf',
+            icon: IconFileText,
+          },
+          {
+            id: uniqueId(),
+            title: 'CSV Reports',
+            href: '/environment/reports/csv',
+            icon: IconFileCertificate,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    subheader: 'RISK & COMPLIANCE',
+  },
+  {
+    id: uniqueId(),
+    title: 'Risk, Disputes & Audits',
+    href: '/risk',
+    icon: IconShieldCheck,
+    roles: ROLES.SUPER_ADMIN,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Disputes',
+        href: '/risk/disputes',
+        icon: IconAlertTriangle,
+      },
+      {
+        id: uniqueId(),
+        title: 'Fraud Flags',
+        href: '/risk/fraud',
+        icon: IconFlag,
+      },
+      {
+        id: uniqueId(),
+        title: 'Audit Logs',
+        href: '/risk/audit',
+        icon: IconClipboard,
+      },
+      {
+        id: uniqueId(),
+        title: 'Manual Reviews',
+        href: '/risk/reviews',
+        icon: IconEye,
+      },
+    ],
+  },
+  {
+    subheader: 'SYSTEM',
+  },
+  {
+    id: uniqueId(),
+    title: 'System Settings',
+    href: '/settings',
+    icon: IconSettings,
+    roles: ROLES.SUPER_ADMIN,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Roles & Permissions',
+        href: '/settings/roles',
+        icon: IconKey,
+      },
+      {
+        id: uniqueId(),
+        title: 'Pricing Rules',
+        href: '/settings/pricing',
+        icon: IconCurrencyDollar,
+      },
+      {
+        id: uniqueId(),
+        title: 'Commission Configuration',
+        href: '/settings/commissions',
+        icon: IconPercentage,
+      },
+      {
+        id: uniqueId(),
+        title: 'Notification Templates',
+        href: '/settings/notifications',
+        icon: IconBell,
+      },
+      {
+        id: uniqueId(),
+        title: 'Feature Flags',
+        href: '/settings/features',
+        icon: IconToggleLeft,
+      },
+      {
+        id: uniqueId(),
+        title: 'Integrations',
+        href: '/settings/integrations',
+        icon: IconPlug,
+        children: [
+          {
+            id: uniqueId(),
+            title: 'Payment Providers',
+            href: '/settings/integrations/payments',
+            icon: IconCurrencyDollar,
+          },
+          {
+            id: uniqueId(),
+            title: 'SMS Services',
+            href: '/settings/integrations/sms',
+            icon: IconMessage,
+          },
+          {
+            id: uniqueId(),
+            title: 'Email Services',
+            href: '/settings/integrations/email',
+            icon: IconMail,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    subheader: 'ACCOUNT',
+  },
+  {
+    id: uniqueId(),
+    title: 'Admin Account',
+    href: '/account',
+    icon: IconUser,
+    children: [
+      {
+        id: uniqueId(),
+        title: 'My Profile',
+        href: '/account/profile',
+        icon: IconUserCircle,
+      },
+      {
+        id: uniqueId(),
+        title: 'Activity Log',
+        href: '/account/activity',
+        icon: IconHistory,
+      },
+      {
+        id: uniqueId(),
+        title: 'Logout',
+        href: '/auth/login',
+        icon: IconLogout,
+      },
+    ],
   },
 ];
 
-export default Menuitems;
+// Filter menu items based on user role
+export const getMenuItems = (userRole?: string): NavItem[] => {
+  if (!userRole) return [];
+  
+  const filteredItems = navigationItems.map(item => {
+    // Process subheaders separately
+    if (item.subheader) {
+      return item; // Keep subheaders for now, we'll filter them later
+    }
+    
+    // Check if user has access to this item
+    if (!hasAccess(item.title, userRole)) {
+      return null; // Remove items user doesn't have access to
+    }
+    
+    // Filter children based on role access
+    if (item.children) {
+      const filteredChildren = item.children.filter(child => 
+        !child.roles || hasAccess(child.title, userRole)
+      ).map(child => {
+        // Filter nested children
+        if (child.children) {
+          const filteredNestedChildren = child.children.filter(nestedChild => 
+            !nestedChild.roles || hasAccess(nestedChild.title, userRole)
+          );
+          
+          return {
+            ...child,
+            children: filteredNestedChildren
+          };
+        }
+        return child;
+      });
+      
+      // If no children remain, remove this item
+      if (filteredChildren.length === 0) {
+        return null;
+      }
+      
+      return {
+        ...item,
+        children: filteredChildren
+      };
+    }
+    
+    return item;
+  }).filter(item => item !== null) as NavItem[];
+  
+  // Now filter out empty subheaders (subheaders with no items after them)
+  const result: NavItem[] = [];
+  for (let i = 0; i < filteredItems.length; i++) {
+    const currentItem = filteredItems[i];
+    
+    // If it's a subheader, check if there are any non-subheader items after it
+    if (currentItem.subheader) {
+      let hasItemsAfter = false;
+      
+      // Look ahead to see if there are any menu items after this subheader
+      for (let j = i + 1; j < filteredItems.length; j++) {
+        if (!filteredItems[j].subheader) {
+          hasItemsAfter = true;
+          break;
+        }
+        // If we hit another subheader, stop looking
+        if (filteredItems[j].subheader) {
+          break;
+        }
+      }
+      
+      // Only include subheader if there are items after it
+      if (hasItemsAfter) {
+        result.push(currentItem);
+      }
+    } else {
+      // Always include non-subheader items
+      result.push(currentItem);
+    }
+  }
+  
+  return result;
+};
+
+export const Menuitems = navigationItems;
+export default navigationItems;

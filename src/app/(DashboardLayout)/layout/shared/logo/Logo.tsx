@@ -13,7 +13,6 @@ const Logo = () => {
 
   const LinkStyled = styled(Link)(() => ({
     height: TopbarHeight,
-
     width: isCollapse == "mini-sidebar" && !isSidebarHover ? '40px' : '180px',
     overflow: "hidden",
     display: "block",
@@ -24,18 +23,18 @@ const Logo = () => {
       <LinkStyled href="/">
         {activeMode === "dark" ? (
           <Image
-            src="/images/logos/light-logo.svg"
+            src="/images/logos/app-icon-white.png"
             alt="logo"
             height={TopbarHeight}
-            width={174}
+            width={70}
             priority
           />
         ) : (
           <Image
-            src={"/images/logos/dark-logo.svg"}
+            src={"/images/logos/app-icon.png"}
             alt="logo"
             height={TopbarHeight}
-            width={174}
+            width={70}
             priority
           />
         )}
@@ -47,18 +46,18 @@ const Logo = () => {
     <LinkStyled href="/">
       {activeMode === "dark" ? (
         <Image
-          src="/images/logos/dark-rtl-logo.svg"
+          src="/images/logos/app-icon-white.png"
           alt="logo"
           height={TopbarHeight}
-          width={174}
+          width={70}
           priority
         />
       ) : (
         <Image
-          src="/images/logos/light-logo-rtl.svg"
+          src="/images/logos/app-icon.png"
           alt="logo"
           height={TopbarHeight}
-          width={174}
+          width={70}
           priority
         />
       )}

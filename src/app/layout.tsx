@@ -3,11 +3,13 @@ import MyApp from "./app";
 import NextTopLoader from 'nextjs-toploader';
 import "./global.css";
 import { CustomizerContextProvider } from "./context/customizerContext";
+import { QueryProvider } from "./providers/query-provider";
+import { AuthProvider } from "../contexts/AuthContext";
 
 
 export const metadata = {
-  title: "Modernize Main Demo",
-  description: "Modernize Main kit",
+  title: "RecliQ Backoffice",
+  description: "Admin dashboard for managing the Recliq recycling ecosystem",
 };
 
 export default function RootLayout({
@@ -19,9 +21,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <NextTopLoader color="#2E8B57" />
-        <CustomizerContextProvider>
-          <MyApp>{children}</MyApp>
-        </CustomizerContextProvider>
+        <QueryProvider>
+          <CustomizerContextProvider>
+            <AuthProvider>
+              <MyApp>{children}</MyApp>
+            </AuthProvider>
+          </CustomizerContextProvider>
+        </QueryProvider>
       </body>
     </html>
   );

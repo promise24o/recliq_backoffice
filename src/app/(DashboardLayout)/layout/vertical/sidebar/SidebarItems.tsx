@@ -1,4 +1,5 @@
-import Menuitems from './MenuItems';
+import { Menuitems, getMenuItems } from './MenuItems';
+import { NavItem as NavItemType } from './MenuItems';
 import { usePathname } from "next/navigation";
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -8,23 +9,25 @@ import NavItem from './NavItem';
 import NavCollapse from './NavCollapse';
 import NavGroup from './NavGroup/NavGroup';
 import { useContext } from 'react';
-
-
-
+import { useUser } from '@/hooks/useAuth';
 
 const SidebarItems = () => {
   const pathname = usePathname();
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf('/'));
   const { isSidebarHover, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { data: user } = useUser();
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const hideMenu = lgUp ? isCollapse == "mini-sidebar" && !isSidebarHover : '';
 
+  // Get menu items filtered by user role
+  const filteredMenuItems = getMenuItems(user?.adminSubRole);
+
   return (
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
-        {Menuitems.map((item) => {
+        {filteredMenuItems.map((item: NavItemType) => {
           // {/********SubHeader**********/}
           if (item.subheader) {
             return <NavGroup item={item} hideMenu={hideMenu} key={item.subheader} />;
@@ -55,4 +58,5 @@ const SidebarItems = () => {
     </Box>
   );
 };
+
 export default SidebarItems;

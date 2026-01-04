@@ -51,7 +51,7 @@ const Header = () => {
             maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
           }}
         >
-          <Box sx={{ width: lgDown ? "45px" : "auto", overflow: "hidden" }}>
+          <Box sx={{ width: lgDown ? "45px" : "auto", overflow: "hidden", marginTop: "20px" }}>
             <Logo />
           </Box>
           {/* ------------------------------------------- */}

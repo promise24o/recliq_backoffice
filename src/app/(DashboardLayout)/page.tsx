@@ -2,6 +2,8 @@
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Typography from '@mui/material/Typography';
 
 import PageContainer from '@/app/components/container/PageContainer';
 // components
@@ -19,11 +21,58 @@ import TopPerformers from '@/app/components/dashboards/modern/TopPerformers';
 import Welcome from "@/app/(DashboardLayout)/layout/shared/welcome/Welcome";
 
 export default function Dashboard() {
-
   const [isLoading, setLoading] = useState(true);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const router = useRouter();
+
   useEffect(() => {
-    setLoading(false);
-  }, []);
+    // Check if user is authenticated
+    const checkAuthentication = () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const user = localStorage.getItem('user');
+        
+        if (!token || !user) {
+          // No authentication data found, redirect to login
+          router.replace('/auth/login');
+          return;
+        }
+
+        // Optional: Validate token format/user data
+        const userData = JSON.parse(user);
+        if (!userData || !userData.id) {
+          // Invalid user data, clear storage and redirect
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          router.replace('/auth/login');
+          return;
+        }
+
+        // Authentication is valid
+        setIsCheckingAuth(false);
+        setLoading(false);
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+        // Clear any corrupted data and redirect
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        router.replace('/auth/login');
+      }
+    };
+
+    checkAuthentication();
+  }, [router]);
+
+  // Show loading state while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Typography>Authenticating...</Typography>
+      </Box>
+    );
+  }
 
   return (
     (<PageContainer title="Dashboard" description="this is Dashboard">

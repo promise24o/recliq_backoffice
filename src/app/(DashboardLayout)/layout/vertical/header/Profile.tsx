@@ -10,6 +10,8 @@ import {
   IconButton,
 } from '@mui/material';
 import * as dropdownData from './data';
+import { useRouter } from 'next/navigation';
+import { useUser, useLogout, getUserDisplayName, getUserPhoto } from '@/hooks/useAuth';
 
 import { IconMail } from '@tabler/icons-react';
 import { Stack } from '@mui/system';
@@ -18,12 +20,45 @@ import Image from 'next/image';
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
+  const router = useRouter();
+  const { data: user, isLoading } = useUser();
+  const logout = useLogout();
+  
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
+  
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
+
+  const handleLogout = () => {
+    logout.mutate();
+    handleClose2();
+    router.push('/auth/login');
+  };
+
+  const displayName = getUserDisplayName(user || null);
+  const userPhoto = getUserPhoto(user || null);
+
+  // Don't render profile menu while loading or if no user
+  if (isLoading || !user) {
+    return (
+      <Box>
+        <IconButton
+          aria-label="profile"
+          color="inherit"
+          disabled
+        >
+          <Avatar
+            src={"/images/profile/user-1.jpg"}
+            alt={"Profile"}
+            sx={{ width: 35, height: 35 }}
+          />
+        </IconButton>
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -68,13 +103,13 @@ const Profile = () => {
       >
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
-          <Avatar src={"/images/profile/user-1.jpg"} alt={"ProfileImg"} sx={{ width: 95, height: 95 }} />
+          <Avatar src={userPhoto} alt={displayName} sx={{ width: 95, height: 95 }} />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-              Mathew Anderson
+              {displayName}
             </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              Designer
+            <Typography variant="h6" color="textSecondary">
+              {user?.adminSubRole?.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toWellFormed()) || 'User'}
             </Typography>
             <Typography
               variant="subtitle2"
@@ -84,7 +119,7 @@ const Profile = () => {
               gap={1}
             >
               <IconMail width={15} height={15} />
-              info@modernize.com
+              {user?.email || 'user@example.com'}
             </Typography>
           </Box>
         </Stack>
@@ -156,7 +191,7 @@ const Profile = () => {
               <Image src={"/images/backgrounds/unlimited-bg.png"} width={150} height={183} style={{ height: 'auto', width: 'auto' }} alt="unlimited" className="signup-bg" />
             </Box>
           </Box>
-          <Button href="/auth/auth1/login" variant="outlined" color="primary" component={Link} fullWidth>
+          <Button onClick={handleLogout} variant="outlined" color="primary" fullWidth>
             Logout
           </Button>
         </Box>

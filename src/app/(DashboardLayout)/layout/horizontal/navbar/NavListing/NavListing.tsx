@@ -1,4 +1,4 @@
-import Menudata from '../Menudata';
+import { Menuitems, getMenuItems } from '../Menudata';
 import { usePathname } from "next/navigation";
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -8,20 +8,24 @@ import NavItem from '../NavItem/NavItem';
 import NavCollapse from '../NavCollapse/NavCollapse';
 import { CustomizerContext } from '@/app/context/customizerContext';
 import { useContext } from 'react';
-
+import { useUser } from '@/hooks/useAuth';
 
 const NavListing = () => {
   const pathname = usePathname();
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf('/'));
   const { isCollapse, isSidebarHover } = useContext(CustomizerContext);
+  const { data: user } = useUser();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
   const hideMenu = lgUp ? isCollapse == "mini-sidebar" && !isSidebarHover : '';
+
+  // Get menu items filtered by user role
+  const filteredMenuItems = getMenuItems(user?.adminSubRole);
 
   return (
     <Box>
       <List sx={{ p: 0, display: 'flex', gap: '3px', zIndex: '100' }}>
-        {Menudata.map((item) => {
+        {filteredMenuItems.map((item) => {
           if (item.children) {
             return (
               <NavCollapse
