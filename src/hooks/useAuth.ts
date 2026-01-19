@@ -104,6 +104,12 @@ export const useUser = () => {
     queryKey: ['user'],
     queryFn: async () => {
       try {
+        // Check if token exists before making API call
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          return null;
+        }
+        
         // Get fresh user data from server (not localStorage)
         const response = await apiClient.get('/auth/me');
         

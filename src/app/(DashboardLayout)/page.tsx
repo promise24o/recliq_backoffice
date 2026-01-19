@@ -6,18 +6,16 @@ import { useRouter } from 'next/navigation';
 import Typography from '@mui/material/Typography';
 
 import PageContainer from '@/app/components/container/PageContainer';
-// components
-import YearlyBreakup from '@/app/components/dashboards/modern/YearlyBreakup';
-import MonthlyEarnings from '@/app/components/dashboards/modern/MonthlyEarnings';
-import TopCards from '@/app/components/dashboards/modern/TopCards';
-import RevenueUpdates from '@/app/components/dashboards/modern/RevenueUpdates';
-import EmployeeSalary from '@/app/components/dashboards/modern/EmployeeSalary';
-import Customers from '@/app/components/dashboards/modern/Customers';
-import Projects from '@/app/components/dashboards/modern/Projects';
-import Social from '@/app/components/dashboards/modern/Social';
-import SellingProducts from '@/app/components/dashboards/modern/SellingProducts';
-import WeeklyStats from '@/app/components/dashboards/modern/WeeklyStats';
-import TopPerformers from '@/app/components/dashboards/modern/TopPerformers';
+import WelcomeCard from '@/app/(DashboardLayout)/dashboards/recliq/WelcomeCard';
+// RECLIQ Dashboard Components
+import TopSummaryCards from '@/app/(DashboardLayout)/dashboards/recliq/TopSummaryCards';
+import RevenueVsPayouts from '@/app/(DashboardLayout)/dashboards/recliq/RevenueVsPayouts';
+import FinancialSnapshot from '@/app/(DashboardLayout)/dashboards/recliq/FinancialSnapshot';
+import OperationsSnapshot from '@/app/(DashboardLayout)/dashboards/recliq/OperationsSnapshot';
+import AgentPerformance from '@/app/(DashboardLayout)/dashboards/recliq/AgentPerformance';
+import RewardsEngagement from '@/app/(DashboardLayout)/dashboards/recliq/RewardsEngagement';
+import EnvironmentalImpact from '@/app/(DashboardLayout)/dashboards/recliq/EnvironmentalImpact';
+import ActionRequired from '@/app/(DashboardLayout)/dashboards/recliq/ActionRequired';
 import Welcome from "@/app/(DashboardLayout)/layout/shared/welcome/Welcome";
 
 export default function Dashboard() {
@@ -31,7 +29,7 @@ export default function Dashboard() {
       try {
         const token = localStorage.getItem('authToken');
         const user = localStorage.getItem('user');
-        
+
         if (!token || !user) {
           // No authentication data found, redirect to login
           router.replace('/auth/login');
@@ -75,107 +73,48 @@ export default function Dashboard() {
   }
 
   return (
-    (<PageContainer title="Dashboard" description="this is Dashboard">
+    (<PageContainer title="RECLIQ Dashboard" description="Waste Management Platform Overview">
       <Box mt={3}>
         <Grid container spacing={3}>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 12
-            }}>
-            <TopCards />
+          {/* Welcome Card - Row 1 */}
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <WelcomeCard />
+            <Box mt={3}>
+              <TopSummaryCards />
+            </Box>
+            <Box mt={3}>
+              <RevenueVsPayouts isLoading={isLoading} />
+            </Box>
           </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 8
-            }}>
-            <RevenueUpdates isLoading={isLoading} />
+
+          {/* Financial Snapshot - Row 1 Side */}
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <FinancialSnapshot isLoading={isLoading} />
           </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4
-            }}>
-            <Grid container spacing={3}>
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6,
-                  lg: 12
-                }}>
-                <YearlyBreakup isLoading={isLoading} />
-              </Grid>
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6,
-                  lg: 12
-                }}>
-                <MonthlyEarnings isLoading={isLoading} />
-              </Grid>
-            </Grid>
+
+          {/* Operations Snapshot - Row 2 Side */}
+          <Grid size={{ xs: 12, lg: 12 }}>
+            <OperationsSnapshot isLoading={isLoading} />
           </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4
-            }}>
-            <EmployeeSalary isLoading={isLoading} />
+
+          {/* Agent Performance - Row 4 */}
+          <Grid size={{ xs: 12, lg: 12 }}>
+            <AgentPerformance isLoading={isLoading} />
           </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4
-            }}>
-            <Grid container spacing={3}>
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6
-                }}>
-                <Customers isLoading={isLoading} />
-              </Grid>
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6
-                }}>
-                <Projects isLoading={isLoading} />
-              </Grid>
-              <Grid size={12}>
-                <Social />
-              </Grid>
-            </Grid>
+
+          {/* Rewards & User Engagement - Row 4 Side */}
+          <Grid size={{ xs: 12, lg: 12 }}>
+            <RewardsEngagement isLoading={isLoading} />
           </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4
-            }}>
-            <SellingProducts />
+
+          {/* Environmental Impact - Row 5 */}
+          <Grid size={{ xs: 12, lg: 12 }}>
+            <EnvironmentalImpact isLoading={isLoading} />
           </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4
-            }}>
-            <WeeklyStats isLoading={isLoading} />
-          </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 8
-            }}>
-            <TopPerformers />
+
+          {/* Action Required - Row 5 Side */}
+          <Grid size={{ xs: 12, lg: 12}}>
+            <ActionRequired isLoading={isLoading} />
           </Grid>
         </Grid>
         <Welcome />

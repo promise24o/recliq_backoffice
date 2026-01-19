@@ -43,7 +43,10 @@ apiClient.interceptors.response.use(
           // Unauthorized - redirect to login
           if (typeof window !== 'undefined') {
             localStorage.removeItem('authToken');
-            window.location.href = '/login';
+            // Prevent infinite redirect loop
+            if (!window.location.pathname.includes('/auth/login')) {
+              window.location.href = '/auth/login';
+            }
           }
           break;
           

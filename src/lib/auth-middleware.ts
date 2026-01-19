@@ -67,7 +67,7 @@ export async function validateUserAccess(request: NextRequest, pathname: string)
   error?: string;
 }> {
   // Public routes that don't require authentication
-  const publicRoutes = ['/login', '/auth/login', '/auth/two-steps', '/auth/forgot-password'];
+  const publicRoutes = ['/auth/login', '/auth/two-steps', '/auth/forgot-password'];
   if (publicRoutes.includes(pathname)) {
     return { isValid: true };
   }

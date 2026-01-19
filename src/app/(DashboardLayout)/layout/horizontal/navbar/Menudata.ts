@@ -117,12 +117,6 @@ const navigationItems: NavItem[] = [
       },
       {
         id: uniqueId(),
-        title: "Today's Activity",
-        href: '/dashboard/today',
-        icon: IconClock,
-      },
-      {
-        id: uniqueId(),
         title: 'System Health',
         href: '/dashboard/health',
         icon: IconTrendingUp,
@@ -254,13 +248,6 @@ const navigationItems: NavItem[] = [
           },
         ],
       },
-      {
-        id: uniqueId(),
-        title: 'Finance Logs',
-        href: '/finance/logs',
-        icon: IconHistory,
-        description: 'Immutable transaction ledger',
-      },
     ],
   },
   {
@@ -322,72 +309,6 @@ const navigationItems: NavItem[] = [
           },
         ],
       },
-      {
-        id: uniqueId(),
-        title: 'Pickup Efficiency',
-        href: '/performance/pickups',
-        icon: IconRecycle,
-        children: [
-          {
-            id: uniqueId(),
-            title: 'Duration Analytics',
-            href: '/performance/pickups/duration',
-            icon: IconClock,
-          },
-          {
-            id: uniqueId(),
-            title: 'Completion Rate',
-            href: '/performance/pickups/completion',
-            icon: IconCheck,
-          },
-        ],
-      },
-      {
-        id: uniqueId(),
-        title: 'Location Performance',
-        href: '/performance/locations',
-        icon: IconMapPin,
-        children: [
-          {
-            id: uniqueId(),
-            title: 'Area-wise Volume',
-            href: '/performance/locations/volume',
-            icon: IconTrendingUp,
-          },
-          {
-            id: uniqueId(),
-            title: 'Agent Density',
-            href: '/performance/locations/density',
-            icon: IconUsers,
-          },
-        ],
-      },
-      {
-        id: uniqueId(),
-        title: 'Revenue Performance',
-        href: '/performance/revenue',
-        icon: IconCurrencyDollar,
-        children: [
-          {
-            id: uniqueId(),
-            title: 'Revenue per kg',
-            href: '/performance/revenue-per-kg',
-            icon: IconScale,
-          },
-          {
-            id: uniqueId(),
-            title: 'Cost per Pickup',
-            href: '/performance/cost-per-pickup',
-            icon: IconCurrencyDollar,
-          },
-          {
-            id: uniqueId(),
-            title: 'Profit Margins',
-            href: '/performance/profit-margins',
-            icon: IconTrendingUp,
-          },
-        ],
-      },
     ],
   },
   {
@@ -408,12 +329,6 @@ const navigationItems: NavItem[] = [
       },
       {
         id: uniqueId(),
-        title: 'User Profiles',
-        href: '/users/profiles',
-        icon: IconUserCircle,
-      },
-      {
-        id: uniqueId(),
         title: 'KYC Status',
         href: '/users/kyc',
         icon: IconFileCertificate,
@@ -423,12 +338,6 @@ const navigationItems: NavItem[] = [
         title: 'Wallet (Read-only)',
         href: '/users/wallets',
         icon: IconWallet,
-      },
-      {
-        id: uniqueId(),
-        title: 'Activity History',
-        href: '/users/activity',
-        icon: IconHistory,
       },
       {
         id: uniqueId(),
@@ -838,12 +747,12 @@ const navigationItems: NavItem[] = [
         href: '/account/activity',
         icon: IconHistory,
       },
-      {
-        id: uniqueId(),
-        title: 'Logout',
-        href: '/auth/login',
-        icon: IconLogout,
-      },
+      // {
+      //   id: uniqueId(),
+      //   title: 'Logout',
+      //   href: '/auth/login',
+      //   icon: IconLogout,
+      // },
     ],
   },
 ];

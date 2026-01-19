@@ -58,35 +58,86 @@ export default function NavCollapse({
   // menu collapse for sub-levels
   React.useEffect(() => {
     setOpen(false);
+    
+    // Check if any child is active (exact match)
     menu?.children?.forEach((item: NavGroup) => {
       if (item?.href === pathname) {
         setOpen(true);
       }
     });
-  }, [pathname, menu.children]);
+    
+    // Check if current pathname starts with parent href (active parent)
+    if (menu?.href && pathname.startsWith(menu.href)) {
+      setOpen(true);
+    }
+    
+    // Check if any child href is a prefix of current pathname
+    menu?.children?.forEach((item: NavGroup) => {
+      if (item?.href && pathname.startsWith(item.href)) {
+        setOpen(true);
+      }
+    });
+  }, [pathname, menu.children, menu.href]);
+
+  // Helper function to check nested children recursively
+  const checkNestedChildren = (children: NavGroup[], pathname: string): boolean => {
+    return children.some((child: NavGroup) => {
+      if (child?.href === pathname || (child?.href && pathname.startsWith(child?.href))) {
+        return true;
+      }
+      if (child?.children) {
+        return checkNestedChildren(child.children, pathname);
+      }
+      return false;
+    });
+  };
+
+  // Check if any child is active (including nested children)
+  const hasActiveChild = menu?.children?.some((item: NavGroup) => {
+    // Check if this item is active
+    if (item?.href === pathname) {
+      return true;
+    }
+    
+    if (item?.href && pathname.startsWith(item?.href)) {
+      return true;
+    }
+    
+    // Check if any nested children are active
+    if (item?.children) {
+      return checkNestedChildren(item.children, pathname);
+    }
+    
+    return false;
+  });
 
   const ListItemStyled = styled(ListItemButton)(() => ({
     marginBottom: "2px",
     padding: "8px 10px",
     paddingLeft: hideMenu ? "10px" : level > 2 ? `${level * 15}px` : "10px",
-    backgroundColor: open && level < 2 ? theme.palette.primary.main : "",
+    backgroundColor: (hasActiveChild || open) && level < 2 ? theme.palette.primary.main : "",
     whiteSpace: "nowrap",
-    "&:hover": {
-      backgroundColor:
-        pathname.includes(menu.href || '') || open
-          ? theme.palette.primary.main
-          : theme.palette.primary.light,
-      color:
-        pathname.includes(menu.href || '') || open
-          ? "white"
-          : theme.palette.primary.main,
-    },
     color:
-      open && level < 2
+      (hasActiveChild || open) && level < 2
         ? "white"
         : level > 1 && open
           ? theme.palette.primary.main
           : theme.palette.text.secondary,
+    "&:hover": {
+      backgroundColor:
+        level < 2 && (hasActiveChild || open)
+          ? theme.palette.primary.main
+          : theme.palette.primary.light,
+      color:
+        level < 2 && (hasActiveChild || open)
+          ? "white"
+          : theme.palette.primary.main,
+    },
+    // Ensure active state overrides hover - only for top-level
+    "&.Mui-selected, &[aria-selected='true']": {
+      backgroundColor: level < 2 ? theme.palette.primary.main + "!important" : theme.palette.primary.light + "!important",
+      color: level < 2 ? "white !important" : theme.palette.primary.main + "!important",
+    },
     borderRadius: `${isBorderRadius}px`,
   }));
 

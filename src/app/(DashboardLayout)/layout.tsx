@@ -42,7 +42,7 @@ export default function RootLayout({
   const MiniSidebarWidth = config.miniSidebarWidth;
   return (
     <MainWrapper className={activeMode === 'dark' ? 'darkbg mainwrapper' : 'mainwrapper'}>
-      <title>Modernize NextJs</title>
+      <title>Recliq</title>
       {/* ------------------------------------------- */}
       {/* Sidebar */}
       {/* ------------------------------------------- */}

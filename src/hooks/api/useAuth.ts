@@ -75,7 +75,7 @@ export function useLogout() {
       queryClient.clear();
       
       // Redirect to login
-      router.push('/login');
+      router.push('/auth/login');
     },
   });
 }
