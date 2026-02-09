@@ -440,7 +440,7 @@ const navigationItems: NavItem[] = [
   },
   {
     id: uniqueId(),
-    title: 'Rewards & Gamification',
+    title: 'Rewards',
     href: '/rewards',
     icon: IconGift,
     roles: ROLES.OPS_AND_SUPER,
@@ -462,24 +462,6 @@ const navigationItems: NavItem[] = [
         title: 'Challenges',
         href: '/rewards/challenges',
         icon: IconStar,
-      },
-      {
-        id: uniqueId(),
-        title: 'Rewards & Benefits',
-        href: '/rewards/benefits',
-        icon: IconGift,
-      },
-      {
-        id: uniqueId(),
-        title: 'Redemptions Log',
-        href: '/rewards/redemptions',
-        icon: IconHistory,
-      },
-      {
-        id: uniqueId(),
-        title: 'Activity Feed',
-        href: '/rewards/activity',
-        icon: IconActivity,
       },
     ],
   },

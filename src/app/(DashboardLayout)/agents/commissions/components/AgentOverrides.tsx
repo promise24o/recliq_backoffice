@@ -104,9 +104,9 @@ const AgentOverrides: React.FC<AgentOverridesProps> = ({ overrides, onEdit }) =>
       case 'percentage':
         return `${override.customRate}%`;
       case 'flat_per_pickup':
-        return `KES ${override.customRate}`;
+        return `₦${override.customRate}`;
       case 'per_kg':
-        return `KES ${override.customRate}/kg`;
+        return `₦${override.customRate}/kg`;
       default:
         return override.customRate.toString();
     }

@@ -208,7 +208,7 @@ const CommissionRuleDetailDrawer: React.FC<CommissionRuleDetailDrawerProps> = ({
 
   const calculateImpact = () => {
     // Example calculation for impact preview
-    const examplePickupValue = 1000; // KES
+    const examplePickupValue = 1000; // ₦
     let commission = 0;
     
     switch (rule.rateType) {
@@ -443,17 +443,17 @@ const CommissionRuleDetailDrawer: React.FC<CommissionRuleDetailDrawerProps> = ({
                   <Stack spacing={2}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant="body2">Pickup Value:</Typography>
-                      <Typography variant="body2">KES {impact.pickupValue}</Typography>
+                      <Typography variant="body2">₦ {impact.pickupValue}</Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant="body2">Commission ({formatRate(rule)}):</Typography>
-                      <Typography variant="body2" color="error.main">-KES {impact.commission}</Typography>
+                      <Typography variant="body2" color="error.main">-₦ {impact.commission}</Typography>
                     </Box>
                     <Divider />
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant="body2" fontWeight={600}>Agent Payout:</Typography>
                       <Typography variant="body2" color="success.main" fontWeight={600}>
-                        KES {impact.agentPayout}
+                        ₦ {impact.agentPayout}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

@@ -228,8 +228,8 @@ const mockChanges: CommissionChange[] = [
     changedBy: 'admin@recliq.com',
     ruleId: 'RULE002',
     ruleName: 'B2B Premium Rate',
-    oldValue: 'KES 40',
-    newValue: 'KES 50',
+    oldValue: '₦40',
+    newValue: '₦50',
     changeDate: '2024-01-10',
     reason: 'B2B volume increase'
   }
@@ -340,9 +340,9 @@ const CommissionRatesPage: React.FC = () => {
       case 'percentage':
         return `${rule.value}%`;
       case 'flat_per_pickup':
-        return `KES ${rule.value}`;
+        return `₦${rule.value}`;
       case 'per_kg':
-        return `KES ${rule.value}/kg`;
+        return `₦${rule.value}/kg`;
       default:
         return rule.value.toString();
     }

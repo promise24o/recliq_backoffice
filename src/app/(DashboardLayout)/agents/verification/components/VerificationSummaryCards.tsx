@@ -2,12 +2,12 @@
 import React from 'react';
 import { Box, Stack, Typography, Card, CardContent, Avatar, Grid } from '@mui/material';
 import { 
-  IconUser, 
+  IconUserCheck, 
   IconClock, 
+  IconSend, 
+  IconEye, 
   IconCheck, 
-  IconX,
-  IconBan,
-  IconAlertTriangle,
+  IconX 
 } from '@tabler/icons-react';
 import DashboardCard from '@/app/components/shared/DashboardCard';
 
@@ -30,47 +30,37 @@ const VerificationSummaryCards: React.FC<VerificationSummaryCardsProps> = ({ sum
     {
       title: 'Total Agents',
       value: summary.totalAgents.toLocaleString(),
-      icon: <IconUser size={20} />,
+      icon: <IconUserCheck size={20} />,
       color: 'primary',
       status: 'all'
     },
     {
       title: 'Pending Verification',
       value: summary.pendingVerification.toLocaleString(),
-      subtitle: 'Awaiting review',
       icon: <IconClock size={20} />,
-      color: 'warning',
+      color: 'info',
       status: 'pending'
+    },
+    {
+      title: 'Under Review',
+      value: summary.incompleteKYC.toLocaleString(),
+      icon: <IconEye size={20} />,
+      color: 'info',
+      status: 'under_review'
     },
     {
       title: 'Verified Agents',
       value: summary.verifiedAgents.toLocaleString(),
-      subtitle: 'Ready for operations',
       icon: <IconCheck size={20} />,
       color: 'success',
       status: 'verified'
     },
     {
-      title: 'Rejected Agents',
-      value: summary.rejectedAgents.toLocaleString(),
+      title: 'Rejected / Suspended',
+      value: (summary.rejectedAgents + summary.suspendedAgents).toLocaleString(),
       icon: <IconX size={20} />,
       color: 'error',
       status: 'rejected'
-    },
-    {
-      title: 'Suspended Agents',
-      value: summary.suspendedAgents.toLocaleString(),
-      icon: <IconBan size={20} />,
-      color: 'error',
-      status: 'suspended'
-    },
-    {
-      title: 'Incomplete KYC',
-      value: `${summary.incompleteKYC}%`,
-      subtitle: 'Need documents',
-      icon: <IconAlertTriangle size={20} />,
-      color: 'warning',
-      status: 'incomplete'
     }
   ];
 
@@ -79,20 +69,20 @@ const VerificationSummaryCards: React.FC<VerificationSummaryCardsProps> = ({ sum
       <CardContent>
         <Grid container spacing={3}>
           {cards.map((card, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2 }} key={index}>
+            <Grid size={{ xs: 12, sm: 6, md: 2 }} key={index}>
               <Card 
                 sx={{ 
-                  cursor: card.status !== 'all' ? 'pointer' : 'default',
-                  transition: 'all 0.2s ease',
+                  cursor: 'pointer',
+                  transition: 'all 0.25s ease',
                   border: '1px solid',
                   borderColor: 'divider',
-                  '&:hover': card.status !== 'all' ? {
+                  '&:hover': {
                     transform: 'translateY(-2px)',
                     boxShadow: 3,
-                    borderColor: 'primary.main',
-                  } : {}
-                }}
-                onClick={() => card.status !== 'all' && onStatusFilter(card.status)}
+                    borderColor: `${card.color}.main`,
+                  }
+                }} 
+                onClick={() => onStatusFilter(card.status)}
               >
                 <CardContent>
                   <Stack direction="row" alignItems="center" spacing={2}>
@@ -100,17 +90,16 @@ const VerificationSummaryCards: React.FC<VerificationSummaryCardsProps> = ({ sum
                       {card.icon}
                     </Avatar>
                     <Box>
-                      <Typography variant="h6" fontWeight={600}>
+                      <Typography 
+                        variant="h4" 
+                        fontWeight={600} 
+                        color={`${card.color}.main`}
+                      >
                         {card.value}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body2" color="text.secondary">
                         {card.title}
                       </Typography>
-                      {card.subtitle && (
-                        <Typography variant="caption" color="text.secondary" display="block">
-                          {card.subtitle}
-                        </Typography>
-                      )}
                     </Box>
                   </Stack>
                 </CardContent>

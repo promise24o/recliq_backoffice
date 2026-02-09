@@ -104,7 +104,7 @@ const CommissionChangeLog: React.FC<CommissionChangeLogProps> = ({ changes }) =>
     if (oldValue.includes('%') || newValue.includes('%')) {
       return 'Rate Change';
     }
-    if (oldValue.includes('KES') || newValue.includes('KES')) {
+    if (oldValue.includes('₦') || newValue.includes('₦')) {
       return 'Amount Change';
     }
     return 'Configuration Change';

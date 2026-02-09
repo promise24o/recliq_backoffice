@@ -20,56 +20,36 @@ import {
 import {
   IconDotsVertical,
   IconEye,
-  IconUser,
+  IconUserCircle,
+  IconBuilding,
+  IconPhone,
   IconMapPin,
-  IconFileText,
-  IconCalendar,
-  IconShield,
-  IconAlertTriangle,
-  IconFlag,
+  IconClock,
+  IconSend,
+  IconSearch,
   IconCheck,
   IconX,
-  IconBan,
-  IconClock,
+  IconAlertTriangle,
 } from '@tabler/icons-react';
 import DashboardCard from '@/app/components/shared/DashboardCard';
-
-interface KYCDocument {
-  id: string;
-  type: 'government_id' | 'address_proof' | 'company_registration' | 'vehicle_details' | 'agent_photo';
-  status: 'valid' | 'expired' | 'rejected' | 'pending';
-  uploadedDate: string;
-  reviewerNotes?: string;
-  url: string;
-}
 
 interface Agent {
   id: string;
   name: string;
-  type: 'individual' | 'company' | 'fleet';
+  phone: string;
   city: string;
   zone: string;
-  signupDate: string;
+  type: 'individual' | 'company' | 'fleet';
   kycStatus: 'pending' | 'under_review' | 'verified' | 'rejected' | 'suspended';
-  submittedDocs: number;
-  lastReviewDate?: string;
-  riskFlag: 'low' | 'medium' | 'high';
-  documents: KYCDocument[];
-  verificationTimeline: {
-    signup: string;
-    documentSubmission?: string;
-    reviewStart?: string;
-    approval?: string;
-    rejection?: string;
-    suspension?: string;
+  submittedOn: string;
+  reviewedOn?: string;
+  reviewer?: string;
+  documents: {
+    governmentId: string;
+    agentPhoto: string;
+    proofOfAddress?: string;
   };
-  riskHistory: {
-    disputes: number;
-    missedPickups: number;
-    complaints: number;
-    priorRejections: number;
-  };
-  notes?: string;
+  rejectionReason?: string;
 }
 
 interface VerificationTableProps {
@@ -78,102 +58,71 @@ interface VerificationTableProps {
   rowsPerPage: number;
   onPageChange: (page: number) => void;
   onAgentClick: (agent: Agent) => void;
-  onAgentAction: (action: string, agent: Agent, reason?: string) => void;
 }
-
-const StatusChip: React.FC<{ status: string }> = ({ status }) => {
-  const getStatusConfig = (status: string) => {
-    switch (status) {
-      case 'verified':
-        return { color: 'success', icon: <IconCheck size={14} />, label: 'Verified' };
-      case 'pending':
-        return { color: 'warning', icon: <IconClock size={14} />, label: 'Pending' };
-      case 'under_review':
-        return { color: 'info', icon: <IconEye size={14} />, label: 'Under Review' };
-      case 'rejected':
-        return { color: 'error', icon: <IconX size={14} />, label: 'Rejected' };
-      case 'suspended':
-        return { color: 'error', icon: <IconBan size={14} />, label: 'Suspended' };
-      default:
-        return { color: 'default', icon: <IconClock size={14} />, label: status };
-    }
-  };
-
-  const config = getStatusConfig(status);
-
-  return (
-    <Chip
-      color={config.color as any}
-      icon={config.icon}
-      label={config.label}
-      size="small"
-      variant="outlined"
-    />
-  );
-};
-
-const RiskChip: React.FC<{ risk: string }> = ({ risk }) => {
-  const getRiskConfig = (risk: string) => {
-    switch (risk) {
-      case 'low':
-        return { color: 'success', icon: <IconShield size={14} /> };
-      case 'medium':
-        return { color: 'warning', icon: <IconAlertTriangle size={14} /> };
-      case 'high':
-        return { color: 'error', icon: <IconFlag size={14} /> };
-      default:
-        return { color: 'default', icon: <IconShield size={14} /> };
-    }
-  };
-
-  const config = getRiskConfig(risk);
-
-  return (
-    <Chip
-      color={config.color as any}
-      icon={config.icon}
-      label={risk.charAt(0).toUpperCase() + risk.slice(1) + ' Risk'}
-      size="small"
-      variant="filled"
-    />
-  );
-};
 
 const VerificationTable: React.FC<VerificationTableProps> = ({
   agents,
   page,
   rowsPerPage,
   onPageChange,
-  onAgentClick,
-  onAgentAction
+  onAgentClick
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [actionMenuAnchor, setActionMenuAnchor] = React.useState<null | HTMLElement>(null);
   const [selectedAgent, setSelectedAgent] = React.useState<Agent | null>(null);
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, agent: Agent) => {
-    setAnchorEl(event.currentTarget);
+  const handleActionMenuOpen = (event: React.MouseEvent<HTMLElement>, agent: Agent) => {
+    setActionMenuAnchor(event.currentTarget);
     setSelectedAgent(agent);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
+  const handleActionMenuClose = () => {
+    setActionMenuAnchor(null);
     setSelectedAgent(null);
   };
 
-  const handleAction = (action: string) => {
+  const handleViewAgent = () => {
     if (selectedAgent) {
-      onAgentAction(action, selectedAgent);
+      onAgentClick(selectedAgent);
     }
-    handleMenuClose();
+    handleActionMenuClose();
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'individual': return 'info';
-      case 'company': return 'warning';
-      case 'fleet': return 'error';
+  const getKYCStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'warning';
+      case 'under_review': return 'info';
+      case 'verified': return 'success';
+      case 'rejected': return 'error';
+      case 'suspended': return 'error';
       default: return 'default';
     }
+  };
+
+  const getKYCStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending': return <IconClock size={16} />;
+      case 'under_review': return <IconSearch size={16} />;
+      case 'verified': return <IconCheck size={16} />;
+      case 'rejected': return <IconX size={16} />;
+      case 'suspended': return <IconAlertTriangle size={16} />;
+      default: return <IconAlertTriangle size={16} />;
+    }
+  };
+
+  const getKYCStatusLabel = (status: string) => {
+    switch (status) {
+      case 'pending': return 'Pending';
+      case 'under_review': return 'Under Review';
+      case 'verified': return 'Verified';
+      case 'rejected': return 'Rejected';
+      case 'suspended': return 'Suspended';
+      default: return 'Unknown';
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '-';
+    return new Date(dateString).toLocaleDateString();
   };
 
   const paginatedAgents = agents.slice(
@@ -182,33 +131,29 @@ const VerificationTable: React.FC<VerificationTableProps> = ({
   );
 
   return (
-    <DashboardCard title="Agent Verification">
+    <DashboardCard>
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Agent</TableCell>
-              <TableCell>Type</TableCell>
+              <TableCell>Phone</TableCell>
               <TableCell>City / Zone</TableCell>
-              <TableCell>Submitted Docs</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Last Review</TableCell>
-              <TableCell>Risk Flag</TableCell>
+              <TableCell>Agent Type</TableCell>
+              <TableCell>KYC Status</TableCell>
+              <TableCell>Submitted On</TableCell>
+              <TableCell>Reviewed On</TableCell>
+              <TableCell>Reviewer</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {paginatedAgents.map((agent) => (
-              <TableRow
-                key={agent.id}
-                hover
-                sx={{ cursor: 'pointer' }}
-                onClick={() => onAgentClick(agent)}
-              >
+              <TableRow key={agent.id} hover>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar sx={{ width: 40, height: 40 }}>
-                      <IconUser size={24} />
+                    <Avatar sx={{ bgcolor: 'primary.main' }}>
+                      {agent.type === 'company' ? <IconBuilding size={16} /> : <IconUserCircle size={16} />}
                     </Avatar>
                     <Box>
                       <Typography variant="body2" fontWeight={600}>
@@ -221,112 +166,86 @@ const VerificationTable: React.FC<VerificationTableProps> = ({
                   </Stack>
                 </TableCell>
                 <TableCell>
-                  <Chip
-                    label={agent.type.charAt(0).toUpperCase() + agent.type.slice(1)}
-                    color={getTypeColor(agent.type) as any}
-                    size="small"
-                    variant="outlined"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Stack spacing={0.5}>
-                    <Stack direction="row" alignItems="center" spacing={0.5}>
-                      <IconMapPin size={14} />
-                      <Typography variant="body2">
-                        {agent.zone}
-                      </Typography>
-                    </Stack>
-                    <Typography variant="caption" color="text.secondary">
-                      {agent.city}
-                    </Typography>
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <IconPhone size={16} />
+                    <Typography variant="body2">{agent.phone}</Typography>
                   </Stack>
                 </TableCell>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    <IconFileText size={16} />
-                    <Typography variant="body2">
-                      {agent.submittedDocs}
-                    </Typography>
+                    <IconMapPin size={16} />
+                    <Box>
+                      <Typography variant="body2">{agent.city}</Typography>
+                      <Typography variant="caption" color="text.secondary">{agent.zone}</Typography>
+                    </Box>
                   </Stack>
                 </TableCell>
                 <TableCell>
-                  <StatusChip status={agent.kycStatus} />
+                  <Typography variant="body2">
+                    {agent.type === 'company' ? 'Company' : agent.type === 'fleet' ? 'Fleet' : 'Individual'}
+                  </Typography>
                 </TableCell>
                 <TableCell>
-                  <Stack spacing={0.5}>
-                    <Stack direction="row" alignItems="center" spacing={0.5}>
-                      <IconCalendar size={14} />
-                      <Typography variant="body2">
-                        {agent.lastReviewDate || '-'}
-                      </Typography>
-                    </Stack>
-                  </Stack>
+                  <Chip
+                    icon={getKYCStatusIcon(agent.kycStatus)}
+                    label={getKYCStatusLabel(agent.kycStatus)}
+                    color={getKYCStatusColor(agent.kycStatus) as any}
+                    size="small"
+                  />
                 </TableCell>
                 <TableCell>
-                  <RiskChip risk={agent.riskFlag} />
+                  <Typography variant="body2">
+                    {formatDate(agent.submittedOn)}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2">
+                    {formatDate(agent.reviewedOn || '')}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2">
+                    {agent.reviewer || '-'}
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <IconButton
+                    onClick={(e) => handleActionMenuOpen(e, agent)}
                     size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMenuClick(e, agent);
-                    }}
                   >
                     <IconDotsVertical size={16} />
                   </IconButton>
+                  <Menu
+                    anchorEl={actionMenuAnchor}
+                    open={Boolean(actionMenuAnchor)}
+                    onClose={handleActionMenuClose}
+                  >
+                    <MenuItem onClick={handleViewAgent}>
+                      <IconEye size={16} style={{ marginRight: 8 }} />
+                      Review KYC
+                    </MenuItem>
+                  </Menu>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Action Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={() => handleAction('view')}>
-          <IconEye size={16} style={{ marginRight: 8 }} />
-          View Details
-        </MenuItem>
-        {selectedAgent?.kycStatus === 'pending' || selectedAgent?.kycStatus === 'under_review' ? (
-          <>
-            <MenuItem onClick={() => handleAction('approve')}>
-              <IconCheck size={16} style={{ marginRight: 8 }} />
-              Approve Verification
-            </MenuItem>
-            <MenuItem onClick={() => handleAction('reject')}>
-              <IconX size={16} style={{ marginRight: 8 }} />
-              Reject Verification
-            </MenuItem>
-          </>
-        ) : null}
-        {selectedAgent?.kycStatus === 'verified' && (
-          <MenuItem onClick={() => handleAction('suspend')}>
-            <IconBan size={16} style={{ marginRight: 8 }} />
-            Suspend Agent
-          </MenuItem>
-        )}
-        <MenuItem onClick={() => handleAction('add_note')}>
-          <IconFileText size={16} style={{ marginRight: 8 }} />
-          Add Compliance Note
-        </MenuItem>
-      </Menu>
-
+      
       {/* Pagination */}
-      {agents.length > rowsPerPage && (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, pr: 2 }}>
+      <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="body2" color="text.secondary">
+            Showing {((page - 1) * rowsPerPage) + 1} to {Math.min(page * rowsPerPage, agents.length)} of {agents.length} agents
+          </Typography>
           <Pagination
             count={Math.ceil(agents.length / rowsPerPage)}
             page={page}
             onChange={(e, value) => onPageChange(value)}
             color="primary"
           />
-        </Box>
-      )}
+        </Stack>
+      </Box>
     </DashboardCard>
   );
 };
