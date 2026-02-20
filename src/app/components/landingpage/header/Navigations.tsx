@@ -103,9 +103,9 @@ const Navigations = () => {
                             size={{
                                 sm: 8
                             }}>
-                            <Box p={4} pr={0} pb={3}>
+                            {/* <Box p={4} pr={0} pb={3}>
                                 <AppLinks />
-                            </Box>
+                            </Box> */}
                             <Divider orientation="vertical" />
                         </Grid>
                         <Grid

@@ -89,10 +89,10 @@ const ROLES = {
 // Check if user role has access to menu item
 const hasAccess = (itemTitle: string | undefined, userRole?: string): boolean => {
   if (!userRole || !itemTitle) return false;
-  
+
   const roleAccess = ROLE_ACCESS[userRole as keyof typeof ROLE_ACCESS];
   if (!roleAccess) return false;
-  
+
   if (roleAccess.includes('all')) return true;
   return roleAccess.includes(itemTitle);
 };
@@ -550,44 +550,24 @@ const navigationItems: NavItem[] = [
         href: '/environment/dashboard',
         icon: IconChartLine,
       },
-      {
-        id: uniqueId(),
-        title: 'CO₂ Saved',
-        href: '/environment/co2',
-        icon: IconCloud,
-      },
-      {
-        id: uniqueId(),
-        title: 'Material Breakdown',
-        href: '/environment/materials',
-        icon: IconRecycle,
-      },
-      {
-        id: uniqueId(),
-        title: 'SDG Metrics',
-        href: '/environment/sdg',
-        icon: IconTree,
-      },
-      {
-        id: uniqueId(),
-        title: 'Export Reports',
-        href: '/environment/reports',
-        icon: IconDownload,
-        children: [
-          {
-            id: uniqueId(),
-            title: 'PDF Reports',
-            href: '/environment/reports/pdf',
-            icon: IconFileText,
-          },
-          {
-            id: uniqueId(),
-            title: 'CSV Reports',
-            href: '/environment/reports/csv',
-            icon: IconFileCertificate,
-          },
-        ],
-      },
+      // {
+      //   id: uniqueId(),
+      //   title: 'CO₂ Saved',
+      //   href: '/environment/co2',
+      //   icon: IconCloud,
+      // },
+      // {
+      //   id: uniqueId(),
+      //   title: 'Material Breakdown',
+      //   href: '/environment/materials',
+      //   icon: IconRecycle,
+      // },
+      // {
+      //   id: uniqueId(),
+      //   title: 'SDG Metrics',
+      //   href: '/environment/sdg',
+      //   icon: IconTree,
+      // },
     ],
   },
   {
@@ -618,12 +598,6 @@ const navigationItems: NavItem[] = [
         href: '/risk/audit',
         icon: IconClipboard,
       },
-      {
-        id: uniqueId(),
-        title: 'Manual Reviews',
-        href: '/risk/reviews',
-        icon: IconEye,
-      },
     ],
   },
   {
@@ -647,6 +621,12 @@ const navigationItems: NavItem[] = [
         title: 'Pricing Rules',
         href: '/settings/pricing',
         icon: IconCurrencyDollar,
+      },
+      {
+        id: uniqueId(),
+        title: 'Zones',
+        href: '/settings/zones',
+        icon: IconMapPin,
       },
     ],
   },
@@ -678,29 +658,29 @@ const navigationItems: NavItem[] = [
 // Filter menu items based on user role
 export const getMenuItems = (userRole?: string): NavItem[] => {
   if (!userRole) return [];
-  
+
   const filteredItems = navigationItems.map(item => {
     // Process subheaders separately
     if (item.subheader) {
       return item; // Keep subheaders for now, we'll filter them later
     }
-    
+
     // Check if user has access to this item
     if (!hasAccess(item.title, userRole)) {
       return null; // Remove items user doesn't have access to
     }
-    
+
     // Filter children based on role access
     if (item.children) {
-      const filteredChildren = item.children.filter(child => 
+      const filteredChildren = item.children.filter(child =>
         !child.roles || hasAccess(child.title, userRole)
       ).map(child => {
         // Filter nested children
         if (child.children) {
-          const filteredNestedChildren = child.children.filter(nestedChild => 
+          const filteredNestedChildren = child.children.filter(nestedChild =>
             !nestedChild.roles || hasAccess(nestedChild.title, userRole)
           );
-          
+
           return {
             ...child,
             children: filteredNestedChildren
@@ -708,30 +688,30 @@ export const getMenuItems = (userRole?: string): NavItem[] => {
         }
         return child;
       });
-      
+
       // If no children remain, remove this item
       if (filteredChildren.length === 0) {
         return null;
       }
-      
+
       return {
         ...item,
         children: filteredChildren
       };
     }
-    
+
     return item;
   }).filter(item => item !== null) as NavItem[];
-  
+
   // Now filter out empty subheaders (subheaders with no items after them)
   const result: NavItem[] = [];
   for (let i = 0; i < filteredItems.length; i++) {
     const currentItem = filteredItems[i];
-    
+
     // If it's a subheader, check if there are any non-subheader items after it
     if (currentItem.subheader) {
       let hasItemsAfter = false;
-      
+
       // Look ahead to see if there are any menu items after this subheader
       for (let j = i + 1; j < filteredItems.length; j++) {
         if (!filteredItems[j].subheader) {
@@ -743,7 +723,7 @@ export const getMenuItems = (userRole?: string): NavItem[] => {
           break;
         }
       }
-      
+
       // Only include subheader if there are items after it
       if (hasItemsAfter) {
         result.push(currentItem);
@@ -753,7 +733,7 @@ export const getMenuItems = (userRole?: string): NavItem[] => {
       result.push(currentItem);
     }
   }
-  
+
   return result;
 };
 

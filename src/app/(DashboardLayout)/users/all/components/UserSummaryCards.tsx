@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Stack, Typography, Card, CardContent, Avatar, Grid } from '@mui/material';
 import { 
   IconUsers, 
@@ -9,21 +9,33 @@ import {
   IconBan 
 } from '@tabler/icons-react';
 import DashboardCard from '@/app/components/shared/DashboardCard';
-
-interface UserSummary {
-  totalUsers: number;
-  activeUsers: number;
-  dormantUsers: number;
-  churnedUsers: number;
-  suspendedUsers: number;
-}
+import { useUserSummary, type UserSummary } from '@/hooks/useUserSummary';
+import { UserSummaryGridSkeleton } from './UserSkeletonLoader';
 
 interface UserSummaryCardsProps {
-  summary: UserSummary;
   onStatusFilter: (status: string) => void;
 }
 
-const UserSummaryCards: React.FC<UserSummaryCardsProps> = ({ summary, onStatusFilter }) => {
+const UserSummaryCards: React.FC<UserSummaryCardsProps> = ({ onStatusFilter }) => {
+  const [mounted, setMounted] = useState(false);
+  const { data: summary, isLoading, error } = useUserSummary();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || isLoading) {
+    return <UserSummaryGridSkeleton count={5} />;
+  }
+
+  if (error || !summary) {
+    return (
+      <Card sx={{ p: 3, textAlign: 'center' }}>
+        <Typography color="error">Failed to load user summary</Typography>
+      </Card>
+    );
+  }
+
   const cards = [
     {
       title: 'Total Users',

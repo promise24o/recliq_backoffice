@@ -10,6 +10,9 @@ import { AuthProvider } from "../contexts/AuthContext";
 export const metadata = {
   title: "RecliQ Backoffice",
   description: "Admin dashboard for managing the Recliq recycling ecosystem",
+  icons: {
+    icon: '/images/logos/app-icon-v2-color.png',
+  },
 };
 
 export default function RootLayout({

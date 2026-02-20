@@ -27,11 +27,12 @@ import ImpactByWasteTypeActivity from './components/ImpactByWasteTypeActivity';
 import CityZoneImpactMap from './components/CityZoneImpactMap';
 import VerifiedImpactTable from './components/VerifiedImpactTable';
 import ESGSDGAlignmentPanel from './components/ESGSDGAlignmentPanel';
+import ImpactDetailDrawer from './components/ImpactDetailDrawer';
 import { 
   mockImpactData,
   defaultImpactFilters 
 } from './mockData';
-import { ImpactMetric } from './types';
+import { ImpactMetric, EnvironmentalImpact } from './types';
 
 const BCrumb = [
   {
@@ -59,6 +60,8 @@ const EnvironmentalImpactDashboard: React.FC = () => {
     message: '',
     severity: 'info'
   });
+  const [selectedImpact, setSelectedImpact] = useState<EnvironmentalImpact | null>(null);
+  const [impactDrawerOpen, setImpactDrawerOpen] = useState(false);
 
   const handleRefresh = () => {
     setNotification({
@@ -214,11 +217,8 @@ const EnvironmentalImpactDashboard: React.FC = () => {
             data={mockImpactData.environmentalImpacts}
             onExport={handleExport}
             onViewDetails={(impact) => {
-              setNotification({
-                open: true,
-                message: `Viewing details for impact ${impact.id}`,
-                severity: 'info'
-              });
+              setSelectedImpact(impact);
+              setImpactDrawerOpen(true);
             }}
             showActions={true}
           />
@@ -260,6 +260,16 @@ const EnvironmentalImpactDashboard: React.FC = () => {
           {notification.message}
         </Alert>
       </Snackbar>
+
+      {/* Impact Detail Drawer */}
+      <ImpactDetailDrawer
+        impact={selectedImpact}
+        open={impactDrawerOpen}
+        onClose={() => {
+          setImpactDrawerOpen(false);
+          setSelectedImpact(null);
+        }}
+      />
     </PageContainer>
   );
 };

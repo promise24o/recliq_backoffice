@@ -82,10 +82,10 @@ const CityZoneImpactMap: React.FC<CityZoneImpactMapProps> = ({
     const data = selectedView === 'city' ? cityData : filteredZoneData;
     return data.map(item => ({
       name: selectedView === 'city' ? item.city : item.zone,
-      weight: selectedView === 'city' ? item.totalWasteRecycled : item.totalWasteRecycled,
-      co2: selectedView === 'city' ? item.co2Avoided : item.co2Avoided,
-      trees: selectedView === 'city' ? item.treesSaved : item.treesSaved,
-      activities: selectedView === 'city' ? item.pickups + item.dropoffs + (item.enterpriseActivity || 0) + (item.communityActivity || 0) : item.pickups + item.dropoffs
+      weight: selectedView === 'city' ? (item?.totalWasteRecycled || 0) : (item?.totalWasteRecycled || 0),
+      co2: selectedView === 'city' ? (item?.co2Avoided || 0) : (item?.co2Avoided || 0),
+      trees: selectedView === 'city' ? (item?.treesSaved || 0) : (item?.treesSaved || 0),
+      activities: selectedView === 'city' ? (Number(item.pickups) || 0) + (Number(item.dropoffs) || 0) + (Number((item as any).enterpriseActivity) || 0) + (Number((item as any).communityActivity) || 0) : (Number(item.pickups) || 0) + (Number(item.dropoffs) || 0)
     }));
   };
 
@@ -433,13 +433,13 @@ const CityZoneImpactMap: React.FC<CityZoneImpactMapProps> = ({
                               )}
                             </Box>
                           </TableCell>
-                          <TableCell align="right">{formatWeight(item.totalWasteRecycled)}</TableCell>
-                          <TableCell align="right">{formatCO2(item.co2Avoided)}</TableCell>
-                          <TableCell align="right">{formatTrees(item.treesSaved)}</TableCell>
+                          <TableCell align="right">{formatWeight(item?.totalWasteRecycled || 0)}</TableCell>
+                          <TableCell align="right">{formatCO2(item?.co2Avoided || 0)}</TableCell>
+                          <TableCell align="right">{formatTrees(item?.treesSaved || 0)}</TableCell>
                           <TableCell align="right">
                             {selectedView === 'city' 
-                              ? item.pickups + item.dropoffs + (item.enterpriseActivity || 0) + (item.communityActivity || 0)
-                              : item.pickups + item.dropoffs}
+                              ? (Number(item.pickups) || 0) + (Number(item.dropoffs) || 0) + (Number((item as any).enterpriseActivity) || 0) + (Number((item as any).communityActivity) || 0)
+                              : (Number(item.pickups) || 0) + (Number(item.dropoffs) || 0)}
                           </TableCell>
                           <TableCell align="right">
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5 }}>

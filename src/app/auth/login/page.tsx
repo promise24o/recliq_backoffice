@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { Grid, Box, Stack, Typography } from "@mui/material";
 import PageContainer from "@/app/components/container/PageContainer";
-import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthLogin from "../authForms/AuthLogin";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -66,7 +65,15 @@ export default function Login() {
           }}>
           <Box position="relative">
             <Box px={3} py={2}>
-              <Logo />
+              <Link href="/">
+                <Image
+                  src="/images/logos/logo-v4.png"
+                  alt="RecliQ Logo"
+                  width={180}
+                  height={70}
+                  priority
+                />
+              </Link>
             </Box>
             <Box
               alignItems="center"

@@ -89,11 +89,7 @@ const MobileRightSidebar = () => {
               <IconChevronUp size="21" stroke="1.5" />
             )}
           </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box px={4} pt={3} overflow="hidden">
-              <AppLinks />
-            </Box>
-          </Collapse>
+          
         </List>
       </Box>
 

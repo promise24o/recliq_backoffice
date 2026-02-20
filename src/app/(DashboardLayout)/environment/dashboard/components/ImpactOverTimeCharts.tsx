@@ -92,9 +92,9 @@ const ImpactOverTimeCharts: React.FC<ImpactOverTimeChartsProps> = ({
       color: '#10B981',
       data: data.map(d => ({
         ...d,
-        formattedWaste: formatWeight(d.wasteRecycled),
-        formattedCO2: formatCO2(d.co2Avoided),
-        formattedTrees: formatTrees(d.treesSaved)
+        formattedWaste: formatWeight(d?.wasteRecycled || 0),
+        formattedCO2: formatCO2(d?.co2Avoided || 0),
+        formattedTrees: formatTrees(d?.treesSaved || 0)
       }))
     },
     {
@@ -103,9 +103,9 @@ const ImpactOverTimeCharts: React.FC<ImpactOverTimeChartsProps> = ({
       color: '#3B82F6',
       data: data.map(d => ({
         ...d,
-        formattedWaste: formatWeight(d.wasteRecycled),
-        formattedCO2: formatCO2(d.co2Avoided),
-        formattedTrees: formatTrees(d.treesSaved)
+        formattedWaste: formatWeight(d?.wasteRecycled || 0),
+        formattedCO2: formatCO2(d?.co2Avoided || 0),
+        formattedTrees: formatTrees(d?.treesSaved || 0)
       }))
     },
     {
@@ -114,9 +114,9 @@ const ImpactOverTimeCharts: React.FC<ImpactOverTimeChartsProps> = ({
       color: '#84CC16',
       data: data.map(d => ({
         ...d,
-        formattedWaste: formatWeight(d.wasteRecycled),
-        formattedCO2: formatCO2(d.co2Avoided),
-        formattedTrees: formatTrees(d.treesSaved)
+        formattedWaste: formatWeight(d?.wasteRecycled || 0),
+        formattedCO2: formatCO2(d?.co2Avoided || 0),
+        formattedTrees: formatTrees(d?.treesSaved || 0)
       }))
     },
     {
@@ -125,10 +125,10 @@ const ImpactOverTimeCharts: React.FC<ImpactOverTimeChartsProps> = ({
       color: '#8B5CF6',
       data: data.map(d => ({
         ...d,
-        totalActivity: d.pickups + d.dropoffs + d.enterpriseActivity + d.communityActivity,
-        formattedWaste: formatWeight(d.wasteRecycled),
-        formattedCO2: formatCO2(d.co2Avoided),
-        formattedTrees: formatTrees(d.treesSaved)
+        totalActivity: (Number(d.pickups) || 0) + (Number(d.dropoffs) || 0) + (Number(d.enterpriseActivity) || 0) + (Number(d.communityActivity) || 0),
+        formattedWaste: formatWeight(d?.wasteRecycled || 0),
+        formattedCO2: formatCO2(d?.co2Avoided || 0),
+        formattedTrees: formatTrees(d?.treesSaved || 0)
       }))
     }
   ];
@@ -240,7 +240,13 @@ const ImpactOverTimeCharts: React.FC<ImpactOverTimeChartsProps> = ({
               </Typography>
             </Box>
             <Typography variant="h6" fontWeight="600" color="#8B5CF6">
-              {data.reduce((sum, d) => sum + d.pickups + d.dropoffs + d.enterpriseActivity + d.communityActivity, 0)}
+              {data.reduce((sum, d) => {
+    const pickups = Number(d.pickups) || 0;
+    const dropoffs = Number(d.dropoffs) || 0;
+    const enterpriseActivity = Number(d.enterpriseActivity) || 0;
+    const communityActivity = Number(d.communityActivity) || 0;
+    return sum + pickups + dropoffs + enterpriseActivity + communityActivity;
+  }, 0).toLocaleString()}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               All time periods

@@ -35,34 +35,16 @@ import {
   IconX,
 } from '@tabler/icons-react';
 
-interface WalletTransaction {
-  id: string;
-  type: 'credit' | 'debit' | 'lock' | 'release';
-  amount: number;
-  description: string;
-  timestamp: string;
-  reference: string;
-  status: 'completed' | 'pending' | 'failed';
-}
-
-interface UserWallet {
-  id: string;
-  name: string;
-  phone: string;
-  city: string;
-  kycStatus: 'not_started' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'expired';
-  availableBalance: number;
-  pendingEscrow: number;
-  onHold: number;
-  lifetimeEarned: number;
-  lifetimeWithdrawn: number;
-  walletStatus: 'normal' | 'locked' | 'compliance_hold' | 'negative_balance' | 'high_risk';
-  lastUpdated: string;
-  transactions: WalletTransaction[];
-}
+import { 
+  type Wallet, 
+  type WalletTransaction, 
+  type WalletStatus, 
+  type KYCStatus,
+  type UserDetails
+} from '@/hooks/useWallets';
 
 interface WalletDetailDrawerProps {
-  wallet: UserWallet | null;
+  wallet: Wallet | null;
   open: boolean;
   onClose: () => void;
 }
@@ -72,7 +54,7 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
   open,
   onClose
 }) => {
-  const getWalletStatusColor = (status: string) => {
+  const getWalletStatusColor = (status: WalletStatus) => {
     switch (status) {
       case 'normal': return 'success';
       case 'locked': return 'error';
@@ -83,7 +65,7 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
     }
   };
 
-  const getWalletStatusIcon = (status: string) => {
+  const getWalletStatusIcon = (status: WalletStatus) => {
     switch (status) {
       case 'normal': return <IconWallet size={16} />;
       case 'locked': return <IconLock size={16} />;
@@ -94,7 +76,7 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
     }
   };
 
-  const getWalletStatusLabel = (status: string) => {
+  const getWalletStatusLabel = (status: WalletStatus) => {
     switch (status) {
       case 'normal': return 'Normal';
       case 'locked': return 'Locked';
@@ -126,9 +108,9 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-KE', {
+    return new Intl.NumberFormat('en-NG', {
       style: 'currency',
-      currency: 'KES',
+      currency: 'NGN',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
@@ -140,9 +122,20 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
   };
 
   const handleCrossLink = (destination: string) => {
-    // Log cross-link access for security
-    console.log(`Cross-link accessed: ${destination} for user ${wallet?.id}`);
-    // In production, this would navigate to the appropriate page
+    switch (destination) {
+      case 'finance_ledger':
+        if (wallet?.id) {
+          window.location.href = `/finance/users/${wallet.userDetails?.id}`;
+        }
+        break;
+      case 'disputes':
+        if (wallet?.id) {
+          window.location.href = `/disputes?userId=${wallet.id}`;
+        }
+        break;
+      default:
+        console.log('Unknown destination:', destination);
+    }
   };
 
   if (!wallet || !open) return null;
@@ -152,23 +145,38 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
       {/* Drawer Header */}
       <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
         <Stack direction="row" alignItems="center" spacing={2}>
-          <Avatar sx={{ bgcolor: 'primary.main', width: 48, height: 48 }}>
-            <IconWallet size={24} />
+          <Avatar 
+            sx={{ width: 48, height: 48 }}
+            src={wallet.userDetails?.profilePhoto}
+          >
+            {!wallet.userDetails?.profilePhoto && wallet.userDetails?.name?.slice(0, 2).toUpperCase()}
           </Avatar>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h6" fontWeight={600}>
-              {wallet.name}
+              {wallet.userDetails?.name || wallet.name}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {wallet.id}
-            </Typography>
-            <Chip
-              icon={getWalletStatusIcon(wallet.walletStatus)}
-              label={getWalletStatusLabel(wallet.walletStatus)}
-              color={getWalletStatusColor(wallet.walletStatus) as any}
-              size="small"
-              sx={{ mt: 1 }}
-            />
+            <Stack direction="row" spacing={2} alignItems="center" mt={0.5}>
+              <Typography variant="body2" color="text.secondary">
+                {wallet.userDetails?.email || 'N/A'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {wallet.userDetails?.phone || wallet.phone}
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center" mt={1}>
+              <Chip
+                icon={getWalletStatusIcon(wallet.walletStatus)}
+                label={getWalletStatusLabel(wallet.walletStatus)}
+                color={getWalletStatusColor(wallet.walletStatus) as any}
+                size="small"
+              />
+              <Chip
+                label={`KYC: ${wallet.kycStatus.toUpperCase()}`}
+                color={wallet.kycStatus === 'approved' ? 'success' : 'warning'}
+                size="small"
+                variant="outlined"
+              />
+            </Stack>
           </Box>
         </Stack>
       </Box>
@@ -185,6 +193,58 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
           All values are derived from the immutable transaction ledger. No modifications allowed.
         </Typography>
       </Box>
+
+      {/* User Information */}
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h6" fontWeight={600} gutterBottom>
+          User Information
+        </Typography>
+        <Stack spacing={2}>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="body2" color="text.secondary">User ID</Typography>
+            <Typography variant="body2">{wallet.userDetails?.id || wallet.id}</Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="body2" color="text.secondary">User Type</Typography>
+            <Typography variant="body2">{wallet.userDetails?.type || 'N/A'}</Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="body2" color="text.secondary">Status</Typography>
+            <Chip
+              label={wallet.userDetails?.status?.toUpperCase() || 'N/A'}
+              color={wallet.userDetails?.status === 'active' ? 'success' : 'default'}
+              size="small"
+            />
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="body2" color="text.secondary">Location</Typography>
+            <Typography variant="body2">
+              {wallet.userDetails?.location?.address || 
+               `${wallet.userDetails?.city || wallet.city}, ${wallet.userDetails?.state || 'N/A'}`}
+            </Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="body2" color="text.secondary">Total Recycles</Typography>
+            <Typography variant="body2">{wallet.userDetails?.totalRecycles || 0}</Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="body2" color="text.secondary">Last Activity</Typography>
+            <Typography variant="body2">
+              {wallet.userDetails?.lastActivity ? 
+               new Date(wallet.userDetails.lastActivity).toLocaleDateString() : 'N/A'}
+            </Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="body2" color="text.secondary">Member Since</Typography>
+            <Typography variant="body2">
+              {wallet.userDetails?.created ? 
+               new Date(wallet.userDetails.created).toLocaleDateString() : 'N/A'}
+            </Typography>
+          </Stack>
+        </Stack>
+      </Box>
+
+      <Divider />
 
       {/* Wallet Snapshot */}
       <Box sx={{ p: 3 }}>
@@ -235,75 +295,6 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
 
       <Divider />
 
-      {/* Ledger Summary */}
-      <Box sx={{ p: 3 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6" fontWeight={600}>
-            Ledger Summary
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            Last 10 transactions
-          </Typography>
-        </Stack>
-        
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Type</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Reference</TableCell>
-                <TableCell>Time</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {wallet.transactions.slice(0, 10).map((transaction) => (
-                <TableRow key={transaction.id}>
-                  <TableCell>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      {getTransactionIcon(transaction.type)}
-                      <Typography variant="caption">
-                        {transaction.type.toUpperCase()}
-                      </Typography>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    <Typography 
-                      variant="body2" 
-                      color={getTransactionColor(transaction.type) + '.main' as any}
-                      fontWeight={600}
-                    >
-                      {transaction.type === 'debit' ? '-' : '+'}{formatCurrency(transaction.amount)}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="caption">{transaction.description}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="caption">{transaction.reference}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="caption">{formatDateTime(transaction.timestamp)}</Typography>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {wallet.transactions.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    <Typography variant="body2" color="text.secondary">
-                      No transactions found
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-
-      <Divider />
-
       {/* Cross-Links */}
       <Box sx={{ p: 3 }}>
         <Typography variant="h6" fontWeight={600} gutterBottom>
@@ -319,15 +310,7 @@ const WalletDetailDrawer: React.FC<WalletDetailDrawerProps> = ({
           >
             View in Finance → User Ledger
           </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<IconUserCircle size={16} />}
-            onClick={() => handleCrossLink('user_profile')}
-            fullWidth
-          >
-            View in User Profile
-          </Button>
+      
           <Button
             variant="outlined"
             size="small"

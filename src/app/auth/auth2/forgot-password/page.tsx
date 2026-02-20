@@ -1,5 +1,6 @@
 import { Grid, Box, Card, Typography } from '@mui/material';
-import Logo from '@/app/(DashboardLayout)/layout/shared/logo/Logo';
+import Link from 'next/link';
+import Image from 'next/image';
 import PageContainer from '@/app/components/container/PageContainer';
 import AuthForgotPassword from '../../authForms/AuthForgotPassword';
 
@@ -34,7 +35,15 @@ export default function ForgotPassword2() {
             }}>
             <Card elevation={9} sx={{ p: 4, zIndex: 1, width: '100%', maxWidth: '500px' }}>
               <Box display="flex" alignItems="center" justifyContent="center">
-                <Logo />
+                <Link href="/">
+                  <Image
+                    src="/images/logos/logo-v4.png"
+                    alt="RecliQ Logo"
+                    width={180}
+                    height={70}
+                    priority
+                  />
+                </Link>
               </Box>
               <Typography
                 color="textSecondary"

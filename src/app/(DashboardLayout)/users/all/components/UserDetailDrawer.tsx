@@ -19,36 +19,22 @@ import {
   IconTrendingUp,
 } from '@tabler/icons-react';
 
-interface User {
-  id: string;
-  name: string;
-  phone: string;
-  city: string;
-  zone: string;
-  status: 'active' | 'dormant' | 'churned' | 'suspended';
-  type: 'individual' | 'enterprise';
-  totalRecycles: number;
-  lastActivity: string;
-  created: string;
-  walletBalance: number;
-  pendingEscrow: number;
-  disputesRaised: number;
-  cancellations: number;
-  avgResponseTime: number;
-}
+import { type User } from '@/hooks/useUsers';
 
 interface UserDetailDrawerProps {
   user: User | null;
   open: boolean;
   onClose: () => void;
   onUserAction: (action: string, user: User) => void;
+  isActionLoading?: boolean;
 }
 
 const UserDetailDrawer: React.FC<UserDetailDrawerProps> = ({
   user,
   open,
   onClose,
-  onUserAction
+  onUserAction,
+  isActionLoading = false
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -75,9 +61,9 @@ const UserDetailDrawer: React.FC<UserDetailDrawerProps> = ({
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-KE', {
+    return new Intl.NumberFormat('en-NG', {
       style: 'currency',
-      currency: 'KES',
+      currency: 'NGN',
     }).format(amount);
   };
 
@@ -132,9 +118,22 @@ const UserDetailDrawer: React.FC<UserDetailDrawerProps> = ({
             <Typography variant="body2">{user.phone}</Typography>
           </Stack>
           <Stack direction="row" justifyContent="space-between">
-            <Typography variant="body2" color="text.secondary">City / Zone</Typography>
-            <Typography variant="body2">{user.city}, {user.zone}</Typography>
+            <Typography variant="body2" color="text.secondary">Location</Typography>
+            <Typography variant="body2" textAlign="right">
+              {user.location ? 
+                `${user.location.city}, ${user.location.state}` : 
+                (user.city && user.zone ? `${user.city}, ${user.zone}` : 'N/A')
+              }
+            </Typography>
           </Stack>
+          {user.location?.address && (
+            <Stack direction="row" justifyContent="space-between">
+              <Typography variant="body2" color="text.secondary">Address</Typography>
+              <Typography variant="body2" textAlign="right" sx={{ maxWidth: '200px' }}>
+                {user.location.address}
+              </Typography>
+            </Stack>
+          )}
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="body2" color="text.secondary">User Type</Typography>
             <Typography variant="body2">
@@ -238,8 +237,9 @@ const UserDetailDrawer: React.FC<UserDetailDrawerProps> = ({
               color="error"
               startIcon={<IconBan size={16} />}
               onClick={() => onUserAction('suspend', user)}
+              disabled={isActionLoading}
             >
-              Suspend User
+              {isActionLoading ? 'Processing...' : 'Suspend User'}
             </Button>
           )}
           {(user.status === 'dormant' || user.status === 'suspended') && (
@@ -248,16 +248,18 @@ const UserDetailDrawer: React.FC<UserDetailDrawerProps> = ({
               color="success"
               startIcon={<IconCheck size={16} />}
               onClick={() => onUserAction('reactivate', user)}
+              disabled={isActionLoading}
             >
-              Reactivate User
+              {isActionLoading ? 'Processing...' : 'Reactivate User'}
             </Button>
           )}
           <Button
             variant="outlined"
             startIcon={<IconAlertTriangle size={16} />}
             onClick={() => onUserAction('flag', user)}
+            disabled={isActionLoading}
           >
-            Flag for Review
+            {isActionLoading ? 'Processing...' : 'Flag for Review'}
           </Button>
         </Stack>
       </Box>

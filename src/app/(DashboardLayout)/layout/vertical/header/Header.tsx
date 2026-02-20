@@ -16,7 +16,6 @@ import Navigation from "./Navigation";
 import MobileRightSidebar from "./MobileRightSidebar";
 import config from '@/app/context/config'
 import { useContext } from "react";
-import { ProductProvider } from '@/app/context/Ecommercecontext/index'
 
 const Header = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
@@ -41,7 +40,6 @@ const Header = () => {
   }));
 
   return (
-    <ProductProvider>
       <AppBarStyled position="sticky" color="default">
         <ToolbarStyled>
           {/* ------------------------------------------- */}
@@ -67,7 +65,7 @@ const Header = () => {
           {/* ------------------------------------------- */}
           {/* Search Dropdown */}
           {/* ------------------------------------------- */}
-          <Search />
+          {/* <Search /> */}
           {lgUp ? (
             <>
               <Navigation />
@@ -76,11 +74,11 @@ const Header = () => {
 
           <Box flexGrow={1} />
           <Stack spacing={1} direction="row" alignItems="center">
-            <Language />
+            {/* <Language /> */}
             {/* ------------------------------------------- */}
             {/* Ecommerce Dropdown */}
             {/* ------------------------------------------- */}
-            <Cart />
+            {/* <Cart /> */}
             {/* ------------------------------------------- */}
             {/* End Ecommerce Dropdown */}
             {/* ------------------------------------------- */}
@@ -110,7 +108,6 @@ const Header = () => {
           </Stack>
         </ToolbarStyled>
       </AppBarStyled>
-    </ProductProvider>
 
   );
 };

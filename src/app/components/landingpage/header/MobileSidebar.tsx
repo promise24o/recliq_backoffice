@@ -47,14 +47,7 @@ const MobileSidebar = () => {
                         sx={{
                             justifyContent: 'space-between'
                         }}>Pages</Button>
-                    {toggle2 && (
-                        <Collapse in={toggle2}>
-                            <Box overflow="hidden" ml={1}>
-                                <AppLinks />
-                                <QuickLinks />
-                            </Box>
-                        </Collapse>
-                    )}
+                   
                     <Button color="inherit" href="#" sx={{
                         justifyContent: 'start'
                     }}>Documentation</Button>

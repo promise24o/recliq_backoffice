@@ -73,20 +73,20 @@ const ImpactSummaryCards: React.FC<ImpactSummaryCardsProps> = ({
     {
       id: 'total_waste',
       title: 'Total Waste Recycled',
-      value: formatWeight(summary.totalWasteRecycled),
+      value: formatWeight(summary?.totalWasteRecycled || 0),
       subtitle: 'Verified weight from all activities',
       icon: <Recycle size={24} color="#10B981" />,
       color: '#10B981',
       bgColor: '#10B98115',
       metricType: 'waste_recycled' as ImpactMetric,
-      growth: summary.monthlyGrowthRate,
-      trend: summary.monthlyGrowthRate >= 0 ? 'up' : 'down',
+      growth: summary?.monthlyGrowthRate || 0,
+      trend: (summary?.monthlyGrowthRate || 0) >= 0 ? 'up' : 'down',
       tooltip: 'Total weight of waste diverted from landfill through verified recycling activities'
     },
     {
       id: 'co2_avoided',
       title: 'CO₂ Emissions Avoided',
-      value: formatCO2(summary.totalCO2Avoided),
+      value: formatCO2(summary?.totalCO2Avoided || 0),
       subtitle: 'Greenhouse gas emissions prevented',
       icon: <Leaf size={24} color="#3B82F6" />,
       color: '#3B82F6',
@@ -99,7 +99,7 @@ const ImpactSummaryCards: React.FC<ImpactSummaryCardsProps> = ({
     {
       id: 'trees_equivalent',
       title: 'Trees Equivalent Saved',
-      value: formatTrees(summary.totalTreesSaved),
+      value: formatTrees(summary?.totalTreesSaved || 0),
       subtitle: 'Environmental impact translated to trees',
       icon: <TreePine size={24} color="#84CC16" />,
       color: '#84CC16',
@@ -112,7 +112,7 @@ const ImpactSummaryCards: React.FC<ImpactSummaryCardsProps> = ({
     {
       id: 'landfill_diversion',
       title: 'Landfill Diversion Rate',
-      value: formatPercentage(summary.landfillDiversionRate),
+      value: formatPercentage(summary?.landfillDiversionRate || 0),
       subtitle: 'Percentage of waste diverted from landfill',
       icon: <Landmark size={24} color="#F59E0B" />,
       color: '#F59E0B',
@@ -125,7 +125,7 @@ const ImpactSummaryCards: React.FC<ImpactSummaryCardsProps> = ({
     {
       id: 'sdg_contributions',
       title: 'SDG Contributions',
-      value: summary.sdgContributions.totalContributions.toString(),
+      value: summary?.sdgContributions?.totalContributions?.toString() || '0',
       subtitle: 'UN Sustainable Development Goals impacted',
       icon: <Target size={24} color="#8B5CF6" />,
       color: '#8B5CF6',
@@ -138,7 +138,7 @@ const ImpactSummaryCards: React.FC<ImpactSummaryCardsProps> = ({
     {
       id: 'active_cities',
       title: 'Active Impact Cities',
-      value: summary.activeImpactCities.toString(),
+      value: summary?.activeImpactCities?.toString() || '0',
       subtitle: 'Cities with verified recycling activity',
       icon: <Building size={24} color="#EF4444" />,
       color: '#EF4444',

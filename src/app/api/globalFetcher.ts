@@ -1,62 +1,31 @@
-// SWR fetcher function
+import apiClient from '@/lib/api-client';
 
-const getFetcher = (url: any) =>
-  fetch(url, {
-    method: "GET",
-    headers: { browserrefreshed: "false" },
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error("Failed to fetch the data");
-    }
-    return res.json();
-  });
+// GET fetcher
+export async function getFetcher(url: string) {
+  const response = await apiClient.get(url);
+  return response.data;
+}
 
-const postFetcher = (url: string, arg: any) =>
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error("Failed to post data");
-    }
-    return res.json();
-  });
+// POST fetcher
+export async function postFetcher(url: string, data?: any) {
+  const response = await apiClient.post(url, data);
+  return response.data;
+}
 
-const putFetcher = (url: string, arg: any) =>
-  fetch(url, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error("Failed to updated data");
-    }
-    return res.json();
-  });
+// PUT fetcher
+export async function putFetcher(url: string, data?: any) {
+  const response = await apiClient.put(url, data);
+  return response.data;
+}
 
-const patchFetcher = (url: string, arg: any) =>
-  fetch(url, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error("Failed to updated data");
-    }
-    return res.json();
-  });
+// PATCH fetcher
+export async function patchFetcher(url: string, data?: any) {
+  const response = await apiClient.patch(url, data);
+  return response.data;
+}
 
-const deleteFetcher = (url: string, arg: any) =>
-  fetch(url, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error("Failed to delete data");
-    }
-    return res.json();
-  });
-
-export { getFetcher, postFetcher, putFetcher, deleteFetcher, patchFetcher };
+// DELETE fetcher
+export async function deleteFetcher(url: string) {
+  const response = await apiClient.delete(url);
+  return response.data;
+}

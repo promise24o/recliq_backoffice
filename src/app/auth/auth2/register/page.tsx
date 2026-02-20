@@ -1,6 +1,6 @@
 import { Grid, Box, Card, Typography, Stack } from "@mui/material";
 import Link from "next/link";
-import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
+import Image from "next/image";
 import PageContainer from "@/app/components/container/PageContainer";
 import AuthRegister from "../../authForms/AuthRegister";
 
@@ -43,7 +43,15 @@ export default function Register2() {
               sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "450px" }}
             >
               <Box display="flex" alignItems="center" justifyContent="center">
-                <Logo />
+                <Link href="/">
+                  <Image
+                    src="/images/logos/logo-v4.png"
+                    alt="RecliQ Logo"
+                    width={180}
+                    height={70}
+                    priority
+                  />
+                </Link>
               </Box>
               <AuthRegister
                 subtext={

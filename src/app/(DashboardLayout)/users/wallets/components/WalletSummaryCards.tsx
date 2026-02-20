@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { Box, Stack, Typography, Card, CardContent, Avatar, Grid } from '@mui/material';
+import { Box, Stack, Typography, Card, CardContent, Avatar } from '@mui/material';
 import { 
   IconWallet, 
   IconLock, 
@@ -27,9 +27,9 @@ interface WalletSummaryCardsProps {
 
 const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({ summary, onStatusFilter }) => {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-KE', {
+    return new Intl.NumberFormat('en-NG', {
       style: 'currency',
-      currency: 'KES',
+      currency: 'NGN',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
@@ -88,15 +88,30 @@ const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({ summary, onStat
             💰 Platform-wide financial exposure - Values reconcile with Finance → Wallet Float
           </Typography>
         </Box>
-        <Grid container spacing={3}>
+        <Box 
+          sx={{ 
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 2,
+            alignItems: 'stretch',
+            justifyContent: 'flex-start'
+          }}
+        >
           {cards.map((card, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 2 }} key={index}>
+            <Box 
+              key={index}
+              sx={{ 
+                flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 16px)', lg: '1 1 calc(33.333% - 16px)' },
+                minWidth: { xs: '100%', sm: 'calc(50% - 8px)', md: '280px', lg: '280px' }
+              }}
+            >
               <Card 
                 sx={{ 
                   cursor: 'pointer',
                   transition: 'all 0.25s ease',
                   border: '1px solid',
                   borderColor: 'divider',
+                  height: '100%',
                   '&:hover': {
                     transform: 'translateY(-2px)',
                     boxShadow: 3,
@@ -125,9 +140,9 @@ const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({ summary, onStat
                   </Stack>
                 </CardContent>
               </Card>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </CardContent>
     </DashboardCard>
   );

@@ -10,6 +10,7 @@ const Logo = () => {
   const { isCollapse, isSidebarHover, activeDir, activeMode } = useContext(CustomizerContext);
 
   const TopbarHeight = config.topbarHeight;
+  const logoSrc = "/images/logos/logo-v4.png";
 
   const LinkStyled = styled(Link)(() => ({
     height: TopbarHeight,
@@ -23,18 +24,18 @@ const Logo = () => {
       <LinkStyled href="/">
         {activeMode === "dark" ? (
           <Image
-            src="/images/logos/app-icon-white.png"
+            src={logoSrc}
             alt="logo"
             height={TopbarHeight}
-            width={70}
+            width={180}
             priority
           />
         ) : (
           <Image
-            src={"/images/logos/app-icon.png"}
+            src={logoSrc}
             alt="logo"
             height={TopbarHeight}
-            width={70}
+            width={180}
             priority
           />
         )}
@@ -46,18 +47,18 @@ const Logo = () => {
     <LinkStyled href="/">
       {activeMode === "dark" ? (
         <Image
-          src="/images/logos/app-icon-white.png"
+          src={logoSrc}
           alt="logo"
           height={TopbarHeight}
-          width={70}
+          width={180}
           priority
         />
       ) : (
         <Image
-          src="/images/logos/app-icon.png"
+          src={logoSrc}
           alt="logo"
           height={TopbarHeight}
-          width={70}
+          width={180}
           priority
         />
       )}

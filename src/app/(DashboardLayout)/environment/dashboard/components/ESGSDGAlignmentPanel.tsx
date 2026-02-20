@@ -73,9 +73,9 @@ const ESGSDGAlignmentPanel: React.FC<ESGSDGAlignmentPanelProps> = ({
   };
 
   // Calculate ESG category totals
-  const environmentalMetrics = esgReport.sdgAlignment.reportableMetrics.filter((m: any) => m.category === 'environmental');
-  const socialMetrics = esgReport.sdgAlignment.reportableMetrics.filter((m: any) => m.category === 'social');
-  const governanceMetrics = esgReport.sdgAlignment.reportableMetrics.filter((m: any) => m.category === 'governance');
+  const environmentalMetrics = esgReport?.sdgAlignment?.reportableMetrics?.filter((m: any) => m.category === 'environmental') || [];
+  const socialMetrics = esgReport?.sdgAlignment?.reportableMetrics?.filter((m: any) => m.category === 'social') || [];
+  const governanceMetrics = esgReport?.sdgAlignment?.reportableMetrics?.filter((m: any) => m.category === 'governance') || [];
 
   const getESGIcon = (category: string) => {
     switch (category) {
@@ -209,7 +209,7 @@ const ESGSDGAlignmentPanel: React.FC<ESGSDGAlignmentPanelProps> = ({
               </Typography>
             </Box>
             <Typography variant="h6" fontWeight="600" color="#F59E0B">
-              {esgReport.sdgContributions.length}
+              {esgReport?.sdgContributions?.length || 0}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Goals impacted
@@ -242,7 +242,7 @@ const ESGSDGAlignmentPanel: React.FC<ESGSDGAlignmentPanelProps> = ({
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {['environmental', 'social', 'governance'].map((category) => {
-                const categoryMetrics = esgReport.metrics.filter(m => m.category === category);
+                const categoryMetrics = esgReport?.metrics?.filter(m => m.category === category) || [];
                 return (
                   <Box key={category} sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -252,8 +252,8 @@ const ESGSDGAlignmentPanel: React.FC<ESGSDGAlignmentPanelProps> = ({
                       </Typography>
                     </Box>
                     
-                    {categoryMetrics.map((metric: any, index: number) => (
-                      <Box key={index} sx={{ mb: 2 }}>
+                    {categoryMetrics.map((metric: any) => (
+                      <Box key={metric.metricId || metric.metricName} sx={{ mb: 2 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                           <Typography variant="body2" fontWeight="500">
                             {metric.metricName.replace(/_/g, ' ').charAt(0).toUpperCase() + 
@@ -315,109 +315,122 @@ const ESGSDGAlignmentPanel: React.FC<ESGSDGAlignmentPanelProps> = ({
             </Box>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {esgReport.sdgContributions.map((sdg) => (
-                <Accordion
-                  key={sdg.sdgNumber}
-                  expanded={expandedSDG === `sdg-${sdg.sdgNumber}`}
-                  onChange={handleSDGChange(`sdg-${sdg.sdgNumber}`)}
-                >
-                  <AccordionSummary expandIcon={<ChevronDown />}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                      <Box
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          backgroundColor: getSDGGoalColor(`SDG_${sdg.sdgNumber}`),
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: '0.75rem',
-                          mr: 2
-                        }}
-                      >
-                        {sdg.sdgNumber}
-                      </Box>
-                      <Box flex={1}>
-                        <Typography variant="subtitle2" fontWeight="600">
-                          {sdg.sdgTitle}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {sdg.sdgDescription}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ textAlign: 'right' }}>
-                        <Typography variant="body2" fontWeight="600" color="primary">
-                          {sdg.impactWeight} {sdg.unit || 'kg'}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {formatPercentage(sdg.progressPercentage || 0)}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Box sx={{ p: 2 }}>
-                      <Box sx={{ mb: 2 }}>
-                        <Typography variant="body2" fontWeight="500" mb={1}>
-                          Target Achievement
-                        </Typography>
-                        <LinearProgress
-                          variant="determinate"
-                          value={Math.min(sdg.progressPercentage || 0, 100)}
-                          sx={{
-                            height: 8,
-                            borderRadius: 4,
-                            backgroundColor: '#e0e0e0',
-                            '& .MuiLinearProgress-bar': {
-                              backgroundColor: getSDGGoalColor(`SDG_${sdg.sdgNumber}`),
-                              borderRadius: 4
-                            }
-                          }}
-                        />
-                        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                          {(sdg.progressPercentage || 0) >= 100 ? (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <CheckCircle size={12} color="#10B981" />
-                              Target achieved
-                            </Box>
-                          ) : (
-                            `${(100 - (sdg.progressPercentage || 0)).toFixed(1)}% to target`
-                          )}
-                        </Typography>
-                      </Box>
+              {esgReport?.sdgContributions?.map((sdg: any) => {
+                const sdgGoal = sdg.goal || `SDG_${sdg.sdgNumber}`;
+                const sdgNumber = sdg.sdgNumber || sdgGoal.replace('SDG_', '');
+                const sdgTitle = sdg.sdgTitle || sdg.description || sdgGoal;
+                const sdgDescription = sdg.sdgDescription || sdg.description || '';
+                const progressPct = sdg.progressPercentage ?? sdg.targetAchievement ?? 0;
+                const contribution = sdg.totalContribution ?? sdg.impactWeight ?? 0;
+                const unit = sdg.unit || 'kg';
+                const initiatives = sdg.initiatives || [];
 
-                      <Box sx={{ mb: 2 }}>
-                        <Typography variant="body2" fontWeight="500" mb={1}>
-                          Contributing Initiatives
-                        </Typography>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                          {sdg.initiatives.map((initiative, index) => (
-                            <Chip
-                              key={index}
-                              label={initiative.replace(/_/g, ' ').charAt(0).toUpperCase() + 
-                                     initiative.replace(/_/g, ' ').slice(1)}
-                              size="small"
-                              variant="outlined"
-                            />
-                          ))}
+                return (
+                  <Accordion
+                    key={sdgGoal}
+                    expanded={expandedSDG === `sdg-${sdgNumber}`}
+                    onChange={handleSDGChange(`sdg-${sdgNumber}`)}
+                  >
+                    <AccordionSummary expandIcon={<ChevronDown />}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                        <Box
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: '50%',
+                            backgroundColor: getSDGGoalColor(sdgGoal),
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '0.75rem',
+                            mr: 2
+                          }}
+                        >
+                          {sdgNumber}
+                        </Box>
+                        <Box flex={1}>
+                          <Typography variant="subtitle2" fontWeight="600">
+                            {sdgTitle}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {sdgDescription}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ textAlign: 'right' }}>
+                          <Typography variant="body2" fontWeight="600" color="primary">
+                            {contribution} {unit}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {formatPercentage(progressPct)}
+                          </Typography>
                         </Box>
                       </Box>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box sx={{ p: 2 }}>
+                        <Box sx={{ mb: 2 }}>
+                          <Typography variant="body2" fontWeight="500" mb={1}>
+                            Target Achievement
+                          </Typography>
+                          <LinearProgress
+                            variant="determinate"
+                            value={Math.min(progressPct, 100)}
+                            sx={{
+                              height: 8,
+                              borderRadius: 4,
+                              backgroundColor: '#e0e0e0',
+                              '& .MuiLinearProgress-bar': {
+                                backgroundColor: getSDGGoalColor(sdgGoal),
+                                borderRadius: 4
+                              }
+                            }}
+                          />
+                          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                            {progressPct >= 100 ? (
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <CheckCircle size={12} color="#10B981" />
+                                Target achieved
+                              </Box>
+                            ) : (
+                              `${(100 - progressPct).toFixed(1)}% to target`
+                            )}
+                          </Typography>
+                        </Box>
 
-                      <Box>
-                        <Typography variant="body2" fontWeight="500" mb={1}>
-                          Impact Details
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Total contribution: {sdg.impactWeight} {sdg.unit || 'kg'}
-                        </Typography>
+                        {initiatives.length > 0 && (
+                          <Box sx={{ mb: 2 }}>
+                            <Typography variant="body2" fontWeight="500" mb={1}>
+                              Contributing Initiatives
+                            </Typography>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                              {initiatives.map((initiative: string) => (
+                                <Chip
+                                  key={initiative}
+                                  label={initiative.replace(/_/g, ' ').charAt(0).toUpperCase() + 
+                                         initiative.replace(/_/g, ' ').slice(1)}
+                                  size="small"
+                                  variant="outlined"
+                                />
+                              ))}
+                            </Box>
+                          </Box>
+                        )}
+
+                        <Box>
+                          <Typography variant="body2" fontWeight="500" mb={1}>
+                            Impact Details
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Total contribution: {contribution} {unit}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+                    </AccordionDetails>
+                  </Accordion>
+                );
+              })}
             </Box>
           </CardContent>
         </Card>
@@ -431,7 +444,7 @@ const ESGSDGAlignmentPanel: React.FC<ESGSDGAlignmentPanelProps> = ({
               Compliance Frameworks
             </Typography>
               <Typography variant="body2" color="text.secondary">
-                Alignment Score: {formatPercentage(esgReport.sdgAlignment.alignmentScore)}
+                Alignment Score: {formatPercentage(esgReport?.sdgAlignment?.alignmentScore || 0)}
               </Typography>
           </CardContent>
         </Card>

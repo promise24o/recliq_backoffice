@@ -92,6 +92,12 @@ export const API_ENDPOINTS = {
     GET: (id: string) => `/users/${id}`,
     UPDATE: (id: string) => `/users/${id}`,
     DELETE: (id: string) => `/users/${id}`,
+    SUMMARY: '/users/summary',
+    SEARCH: '/users/search',
+    ACTION: (id: string) => `/users/${id}/action`,
+    EXPORT: '/users/export',
+    CITIES: '/users/cities/list',
+    ZONES: '/users/zones/list',
   },
   
   // Agents
@@ -119,6 +125,16 @@ export const API_ENDPOINTS = {
     WITHDRAW: '/wallets/withdraw',
   },
   
+  // KYC
+  KYC: {
+    ADMIN_ALL: '/kyc/admin/all',
+    ADMIN_GET: (userId: string) => `/kyc/admin/${userId}`,
+    ADMIN_PENDING: '/kyc/admin/pending',
+    ADMIN_STATS: '/kyc/admin/stats',
+    ADMIN_APPROVE: (userId: string) => `/kyc/admin/${userId}/approve`,
+    ADMIN_REJECT: (userId: string) => `/kyc/admin/${userId}/reject`,
+  },
+  
   // Rewards
   REWARDS: {
     LIST: '/rewards',
@@ -135,11 +151,54 @@ export const API_ENDPOINTS = {
     OPERATIONS: '/analytics/operations',
   },
   
+  // Admins
+  ADMINS: {
+    LIST: '/admins',
+    CREATE: '/admins',
+    GET: (id: string) => `/admins/${id}`,
+    UPDATE: (id: string) => `/admins/${id}`,
+    SUSPEND: (id: string) => `/admins/${id}/suspend`,
+    ACTIVATE: (id: string) => `/admins/${id}/activate`,
+    REVOKE: (id: string) => `/admins/${id}/revoke`,
+    ASSIGN: '/admins/assign',
+    ROLES_SUMMARY: '/admins/roles/summary',
+    ROLES_DEFINITIONS: '/admins/roles/definitions',
+    PERMISSIONS_ANALYSIS: '/admins/permissions/analysis',
+    ROLES_CHANGE_HISTORY: '/admins/roles/change-history',
+    // Profile endpoints
+    PROFILE: '/admins/profile/me',
+    UPDATE_PROFILE: '/admins/profile/me',
+    CHANGE_PASSWORD: '/admins/change-password',
+    SECURITY: '/admins/profile/me/security',
+    ACTIVITY: '/admins/profile/me/activity',
+    NOTIFICATIONS: '/admins/profile/me/notifications',
+  },
+
   // System
   SYSTEM: {
     SETTINGS: '/system/settings',
     HEALTH: '/system/health',
     AUDIT_LOG: '/system/audit-log',
+  },
+
+  // Zones
+  ZONES: {
+    CITIES: '/zones/cities',
+    LIST: '/zones/zones',
+    CREATE: '/zones/zones',
+    GET: (id: string) => `/zones/zones/${id}`,
+    UPDATE: (id: string) => `/zones/zones/${id}`,
+    DELETE: (id: string) => `/zones/zones/${id}`,
+  },
+
+  // Activity
+  ACTIVITY: {
+    BASE: '/activity',
+    LOGS: '/activity/logs',
+    SUMMARY: '/activity/summary',
+    SECURITY_SIGNALS: '/activity/security-signals',
+    EXPORT: '/activity/export',
+    ACKNOWLEDGE_SIGNAL: (id: string) => `/activity/security-signals/${id}/acknowledge`,
   },
 };
 

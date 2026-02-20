@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Grid, Box, Typography, Stack } from "@mui/material";
 import PageContainer from "@/app/components/container/PageContainer";
-import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 
 import AuthRegister from "../../authForms/AuthRegister";
 import Image from "next/image";
@@ -36,8 +35,16 @@ export default function Register() {
             xl: 8
           }}>
           <Box position="relative">
-            <Box px={3}>
-              <Logo />
+            <Box px={3} py={2}>
+              <Link href="/">
+                <Image
+                  src="/images/logos/logo-v4.png"
+                  alt="RecliQ Logo"
+                  width={180}
+                  height={70}
+                  priority
+                />
+              </Link>
             </Box>
             <Box
               alignItems="center"

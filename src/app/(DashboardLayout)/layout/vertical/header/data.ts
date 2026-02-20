@@ -62,22 +62,22 @@ interface ProfileType {
 }
 const profile: ProfileType[] = [
   {
-    href: "/apps/user-profile/profile",
+    href: "/account/profile",
     title: "My Profile",
-    subtitle: "Account Settings",
+    subtitle: "Account & Security Settings",
     icon: "/images/svgs/icon-account.svg",
   },
   {
-    href: "/apps/email",
-    title: "My Inbox",
-    subtitle: "Messages & Emails",
-    icon: "/images/svgs/icon-inbox.svg",
+    href: "/account/activity",
+    title: "Activity Log",
+    subtitle: "Recent Actions & Audit Trail",
+    icon: "/images/svgs/icon-tasks.svg",
   },
   {
-    href: "/apps/kanban",
-    title: "My Tasks",
-    subtitle: "To-do and Daily Tasks",
-    icon: "/images/svgs/icon-tasks.svg",
+    href: "/settings/roles",
+    title: "Roles & Permissions",
+    subtitle: "Manage Admin Access",
+    icon: "/images/svgs/icon-inbox.svg",
   },
 ];
 

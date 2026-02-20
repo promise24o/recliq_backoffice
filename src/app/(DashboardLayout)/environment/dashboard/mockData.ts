@@ -794,6 +794,29 @@ export const getActivityTypeColor = (activityType: ActivityType): string => {
   return colors[activityType] || '#6B7280';
 };
 
+export const VERIFICATION_STATUS_LABELS = {
+  verified: 'Verified',
+  pending: 'Pending',
+  rejected: 'Rejected',
+  flagged: 'Flagged'
+} as const;
+
+export const WASTE_TYPE_LABELS = {
+  plastic: 'Plastic',
+  metal: 'Metal',
+  paper: 'Paper',
+  glass: 'Glass',
+  organic: 'Organic',
+  e_waste: 'E-Waste',
+  textile: 'Textile',
+  mixed: 'Mixed'
+} as const;
+
+export const ACTIVITY_TYPE_LABELS = {
+  pickup: 'Pickup',
+  drop_off: 'Drop-off'
+} as const;
+
 export const getVerificationStatusColor = (status: VerificationStatus): string => {
   const colors = {
     verified: '#10B981',

@@ -49,6 +49,7 @@ import {
   getActivityTypeColor,
   getVerificationStatusColor
 } from '../mockData';
+import ImpactDetailDrawer from './ImpactDetailDrawer';
 
 interface VerifiedImpactTableProps {
   data: EnvironmentalImpact[];
@@ -83,11 +84,14 @@ const VerifiedImpactTable: React.FC<VerifiedImpactTableProps> = ({
   };
 
   const handleViewDetails = () => {
-    if (selectedRow && onViewDetails) {
-      onViewDetails(selectedRow);
+    if (selectedRow) {
+      if (onViewDetails) {
+        onViewDetails(selectedRow);
+      }
     }
     handleMenuClose();
   };
+
 
   const handleExport = (format: 'csv' | 'pdf') => {
     if (onExport) {
@@ -96,7 +100,8 @@ const VerifiedImpactTable: React.FC<VerifiedImpactTableProps> = ({
     handleMenuClose();
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     console.log('Refreshing verified impact data');
   };
 
@@ -146,6 +151,7 @@ const VerifiedImpactTable: React.FC<VerifiedImpactTableProps> = ({
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
+    <>
     <Card>
       <CardContent sx={{ p: 3 }}>
         {/* Header */}
@@ -267,12 +273,15 @@ const VerifiedImpactTable: React.FC<VerifiedImpactTableProps> = ({
             </TableHead>
             <TableBody>
               {paginatedData.map((row) => (
-                <TableRow key={row.id} hover>
+                <TableRow 
+                  key={row.id} 
+                  hover
+                >
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Calendar size={14} color="#666" />
                       <Typography variant="body2">
-                        {new Date(row.date).toLocaleDateString()}
+                        {new Date(row.date).toLocaleDateString('en-US')}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -352,7 +361,10 @@ const VerifiedImpactTable: React.FC<VerifiedImpactTableProps> = ({
                   <TableCell align="center">
                     <IconButton
                       size="small"
-                      onClick={(e) => handleMenuClick(e, row)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMenuClick(e, row);
+                      }}
                     >
                       <MoreVertical size={16} />
                     </IconButton>
@@ -428,6 +440,8 @@ const VerifiedImpactTable: React.FC<VerifiedImpactTableProps> = ({
         </Box>
       </CardContent>
     </Card>
+
+    </>
   );
 };
 

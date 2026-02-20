@@ -1,5 +1,5 @@
 import { Grid, Box, Typography } from "@mui/material";
-import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
+import Link from "next/link";
 import PageContainer from "@/app/components/container/PageContainer";
 import AuthForgotPassword from "../authForms/AuthForgotPassword";
 import Image from "next/image";
@@ -37,8 +37,16 @@ export default function ForgotPassword() {
             xl: 9
           }}>
           <Box position="relative">
-            <Box px={3}>
-              <Logo />
+            <Box px={3} py={2}>
+              <Link href="/">
+                <Image
+                  src="/images/logos/logo-v4.png"
+                  alt="RecliQ Logo"
+                  width={180}
+                  height={70}
+                  priority
+                />
+              </Link>
             </Box>
             <Box
               alignItems="center"
